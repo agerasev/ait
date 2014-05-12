@@ -1,0 +1,4 @@
+*.user
+binary/
+binary-debug/
+*~
