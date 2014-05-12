@@ -79,10 +79,10 @@ struct tvec2 : tvecn<T,2> {
         this->data[0] = ax;
         this->data[1] = ay;
     }
-    T &x() {return data[0];}
-    T &y() {return data[1];}
-    T x() const {return data[0];}
-    T y() const {return data[1];}
+    T &x() {return this->data[0];}
+    T &y() {return this->data[1];}
+    T x() const {return this->data[0];}
+    T y() const {return this->data[1];}
 };
 
 // Pseudo cross product
@@ -93,21 +93,21 @@ T operator ^(const tvecn<T,2> &a, const tvecn<T,2> &b) {
 
 template <typename T>
 struct tvec3 : tvecn<T,3> {
-    tvec2() : tvecn<T,3>() {}
+    tvec3() : tvecn<T,3>() {}
     template <typename S>
-    tvec2(const tvecn<S,3> &av) : tvecn<T,3>(av) {}
-    tvec2(const T *p, int d = 1) : tvecn<T,3>(p,d) {}
-    tvec2(T ax, T ay, T az) {
+    tvec3(const tvecn<S,3> &av) : tvecn<T,3>(av) {}
+    tvec3(const T *p, int d = 1) : tvecn<T,3>(p,d) {}
+    tvec3(T ax, T ay, T az) {
         this->data[0] = ax;
         this->data[1] = ay;
         this->data[2] = az;
     }
-    T &x() {return data[0];}
-    T &y() {return data[1];}
-    T &z() {return data[2];}
-    T x() const {return data[0];}
-    T y() const {return data[1];}
-    T z() const {return data[2];}
+    T &x() {return this->data[0];}
+    T &y() {return this->data[1];}
+    T &z() {return this->data[2];}
+    T x() const {return this->data[0];}
+    T y() const {return this->data[1];}
+    T z() const {return this->data[2];}
 };
 
 // Cross product
@@ -118,24 +118,24 @@ tvecn<T,3> operator ^(const tvecn<T,3> &a, const tvecn<T,3> &b) {
 
 template <typename T>
 struct tvec4 : tvecn<T,4> {
-    tvec2() : tvecn<T,4>() {}
+    tvec4() : tvecn<T,4>() {}
     template <typename S>
-    tvec2(const tvecn<S,4> &av) : tvecn<T,4>(av) {}
-    tvec2(const T *p, int d = 1) : tvecn<T,4>(p,d) {}
-    tvec2(T ax, T ay, T az, T aw) {
+    tvec4(const tvecn<S,4> &av) : tvecn<T,4>(av) {}
+    tvec4(const T *p, int d = 1) : tvecn<T,4>(p,d) {}
+    tvec4(T ax, T ay, T az, T aw) {
         this->data[0] = ax;
         this->data[1] = ay;
         this->data[2] = az;
         this->data[3] = aw;
     }
-    T &x() {return data[0];}
-    T &y() {return data[1];}
-    T &z() {return data[2];}
-    T &w() {return data[3];}
-    T x() const {return data[0];}
-    T y() const {return data[1];}
-    T z() const {return data[2];}
-    T w() const {return data[3];}
+    T &x() {return this->data[0];}
+    T &y() {return this->data[1];}
+    T &z() {return this->data[2];}
+    T &w() {return this->data[3];}
+    T x() const {return this->data[0];}
+    T y() const {return this->data[1];}
+    T z() const {return this->data[2];}
+    T w() const {return this->data[3];}
 };
 
 #endif // TVECN_H

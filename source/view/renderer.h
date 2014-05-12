@@ -1,10 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include"../map/map.h"
+#include"../model/imap.h"
 
-class Renderer
-{
+class Renderer {
 public:
     Renderer();
 };
