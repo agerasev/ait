@@ -5,7 +5,7 @@
 
 #include<iostream>
 
-class FBO
+class FrameBuffer
 {
 private:
     int width, height;

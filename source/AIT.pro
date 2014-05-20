@@ -19,7 +19,8 @@ SOURCES += \
     view/window/window.cpp \
     view/window/glwindow.cpp \
     view/buffer/framebuffer.cpp \
-    view/buffer/vertexbuffer.cpp
+    view/buffer/vertexbuffer.cpp \
+    view/window/listener.cpp
 
 HEADERS += \
     view/renderer.h \
@@ -36,4 +37,5 @@ HEADERS += \
     view/window/window.h \
     view/window/glwindow.h \
     view/buffer/framebuffer.h \
-    view/buffer/vertexbuffer.h
+    view/buffer/vertexbuffer.h \
+    view/window/listener.h

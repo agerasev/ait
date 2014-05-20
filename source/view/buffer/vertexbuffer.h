@@ -3,7 +3,7 @@
 
 #include<GL/glew.h>
 
-class VBO
+class VertexBuffer
 {
 private:
     GLuint id;

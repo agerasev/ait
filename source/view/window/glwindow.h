@@ -41,14 +41,14 @@ public:
     virtual ~GLWindow() {
         SDL_GL_DeleteContext(context);
     }
-    void clear() {
+    virtual void clear() {
         glClear(GL_COLOR_BUFFER_BIT);
     }
-    void flip() {
+    virtual void flip() {
         SDL_GL_SwapWindow(window);
         //SDL_Delay(16);
     }
-    void resize(int w, int h) {
+    virtual void resize(int w, int h) {
         width = w;
         height = h;
         glViewport(0,0,w,h);

@@ -25,10 +25,10 @@ public:
     GLint getAttribute(const GLchar *name);
     GLint getUniform(const GLchar *name);
 
-    void enableAttribute(GLuint attrib) {
+    inline void enableAttribute(GLuint attrib) {
         glEnableVertexAttribArray(attrib);
     }
-    void disableAttribute(GLuint attrib) {
+    inline void disableAttribute(GLuint attrib) {
         glDisableVertexAttribArray(attrib);
     }
 };

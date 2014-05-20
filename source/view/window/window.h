@@ -3,11 +3,15 @@
 
 #include<SDL2/SDL.h>
 
+#include"listener.h"
+
 class Window
 {
 protected:
     SDL_Window *window;
     int width, height;
+    Listener *listener = nullptr;
+    Renderer *renderer = nullptr;
 public:
     Window(const char *name = "SDL Window", int w = 800, int h = 600, unsigned int flags = 0) {
         SDL_Init(SDL_INIT_VIDEO);
@@ -33,6 +37,28 @@ public:
     };
     Size size() {
         return Size(width,height);
+    }
+    void setListener(Listener *l) {
+        listener = l;
+    }
+    void setRenderer(Renderer *r) {
+        renderer = r;
+    }
+private:
+    virtual void clear() = 0;
+    virtual void flip() = 0;
+    virtual void resize(int w, int h) = 0;
+public:
+    class Renderer {
+        virtual void render() = 0;
+    };
+    void start() {
+        listener->quit = false;
+        while(!listener->quit) {
+            clear();
+            renderer->render();
+            flip();
+        }
     }
 };
 
