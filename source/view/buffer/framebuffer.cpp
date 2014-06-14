@@ -1,1 +1,1 @@
-#include "fbo.h"
+#include "framebuffer.h"

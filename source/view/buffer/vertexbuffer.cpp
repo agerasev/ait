@@ -1,1 +1,1 @@
-#include "vbo.h"
+#include "vertexbuffer.h"

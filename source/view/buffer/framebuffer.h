@@ -28,7 +28,7 @@ public:
         }
     };
 
-    FBO(int w, int h) {
+    FrameBuffer(int w, int h) {
         width = w;
         height = h;
 
@@ -59,7 +59,7 @@ public:
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     }
-    virtual ~FBO() {
+    virtual ~FrameBuffer() {
 
     }
 

@@ -9,11 +9,11 @@ private:
     GLuint id;
     GLuint length;
 public:
-    VBO() {
+    VertexBuffer() {
         length = 0;
         glGenBuffers(1, &id);
     }
-    virtual ~VBO() {
+    virtual ~VertexBuffer() {
         unbind();
         glDeleteBuffers(1, &id);
     }

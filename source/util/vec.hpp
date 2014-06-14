@@ -138,4 +138,17 @@ struct tvec4 : tvecn<T,4> {
     T w() const {return this->data[3];}
 };
 
+typedef tvec2<double> vec2;
+typedef tvec2<int> ivec2;
+typedef tvec3<double> vec3;
+typedef tvec3<int> ivec3;
+typedef tvec4<double> vec4;
+typedef tvec4<int> ivec4;
+
+#ifdef UNITTEST
+void unittestTVECN() {
+
+}
+#endif // UNITTEST
+
 #endif // TVECN_H
