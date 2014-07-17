@@ -1,5 +1,5 @@
 *.user
-binary/
-binary-debug/
+build/
+debug/
 *~
 *.o

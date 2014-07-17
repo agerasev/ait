@@ -1,12 +1,25 @@
-#include "glwindow.h"
+#ifndef GLWINDOW_HPP
+#define GLWINDOW_HPP
 
-#include "window.h"
+#include "window.hpp"
+
+class GLWindow : public Window {
+protected:
+    SDL_GLContext context;
+public:
+    GLWindow(const char *name = "SDL GL Window", const Size &s = Size(800,600), unsigned int flags = 0);
+    virtual ~GLWindow();
+
+    virtual void flip();
+    virtual void resize(const Size &s);
+};
 
 #include <GL/glew.h>
 
+/*
 #include <iostream>
-
 using namespace std;
+*/
 
 GLWindow::GLWindow(const char *name, const Size &s, unsigned int flags) :
     Window(name,s,SDL_WINDOW_OPENGL|flags) {
@@ -22,13 +35,16 @@ GLWindow::GLWindow(const char *name, const Size &s, unsigned int flags) :
     GLenum glew_status = glewInit();
     if(GLEW_OK != glew_status)
     {
-        cout << "Error: " << glewGetErrorString(glew_status) << endl;
+       // cout << "Error: " << glewGetErrorString(glew_status) << endl;
+        return;
     }
 
+    /*
     if(!GLEW_VERSION_2_0)
     {
         cout << "No support for OpenGL 2.0 found" << endl;
     }
+    */
 
     glClearColor(0, 0, 0, 0);
     glViewport(0,0,s.w,s.h);
@@ -36,11 +52,14 @@ GLWindow::GLWindow(const char *name, const Size &s, unsigned int flags) :
 GLWindow::~GLWindow() {
     SDL_GL_DeleteContext(context);
 }
+
 void GLWindow::flip() {
     SDL_GL_SwapWindow(window);
-    //SDL_Delay(16);
+    SDL_Delay(8);
 }
 void GLWindow::resize(const Size &s) {
     size = s;
     glViewport(0,0,s.w,s.h);
 }
+
+#endif // GLWINDOW_HPP

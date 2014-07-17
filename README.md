@@ -1,10 +1,10 @@
 AIT Project
 ===
 
-One day I had an idea to try myself in AI programming. This is Artifical Intelligence Test project.
+I'd like to create project about different living things in some world. They will live, interact between each other, been born or die. These all things may produce some slow evolution in this world, and it will be very interesting to watch it.
 
-Project now contains a lot of sources, but it couldn't be compiled, because this files are from my different projects and they must be modified to work together.
+The main idea of the project is represent more or less complicated model of real world as an oriented graph. Vertexes of graph are different objects of this world. Edges of graph are interactions between objects from one to another. Objects may have another graphs as inner structure.
 
-I am not doing a lot of commits now, because I'm having exams in my university, but I am planning to develop this project after exams on my holidays.
+I hope I will not lose my motivation for developing this project.
 
 Sorry for my english, it is not my native language.
