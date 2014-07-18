@@ -14,8 +14,8 @@
 
 class Editor : public Window::Listener, public Window::Renderer {
 private:
-    SDL_Surface *bitmap = nullptr;
-    SDL_RWops *rwops = nullptr;
+	SDL_Surface *bitmap = nullptr;
+	const char *filename = nullptr;
     Window::Size size;
     Uint8 rc = 0x00, gc = 0xff, bc = 0x00;
 
@@ -24,20 +24,18 @@ public:
 
     }
 
-    void open(const char *name) {
-        rwops = SDL_RWFromFile(name,"rb+");
-        bitmap = SDL_LoadBMP_RW(rwops,1);
+	void open(const char *name) {
+		filename = name;
+		bitmap = SDL_LoadBMP(filename);
     }
 
-    void create(const char *name, int w, int h) {
-        rwops = SDL_RWFromFile(name,"wb");
+	void create(const char *name, int w, int h) {
+		filename = name;
         bitmap = SDL_CreateRGBSurface(SDL_SWSURFACE,w,h,24,0x0000ff,0x00ff00,0xff0000,0x000000);
     }
 
     void save() {
-        if(rwops != nullptr) {
-            SDL_SaveBMP_RW(bitmap,rwops,1);
-        }
+		SDL_SaveBMP(bitmap,filename);
     }
 
 private:
@@ -47,7 +45,7 @@ private:
 
 public:
 
-    // override Listener
+	// override Listener methods
     virtual void handle(const SDL_Event &event) {
         if(event.type == SDL_MOUSEBUTTONDOWN) {
             if(event.button.button == SDL_BUTTON_LEFT) {
@@ -59,7 +57,7 @@ public:
             }
         }
     }
-    // override Renderer
+	// override Renderer methods
     virtual void init() {
         glClearColor(1.0f,0.0f,0.0f,0.0f);
     }
@@ -71,7 +69,7 @@ public:
         glMatrixMode(GL_MODELVIEW);
     }
     virtual void dispose() {
-
+		save();
     }
     virtual void display() {
         glClear(GL_COLOR_BUFFER_BIT);

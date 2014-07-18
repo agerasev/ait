@@ -59,7 +59,7 @@ void GLWindow::flip() {
 }
 void GLWindow::resize(const Size &s) {
     size = s;
-    glViewport(0,0,s.w,s.h);
+	glViewport(0,0,s.w,s.h);
 }
 
 #endif // GLWINDOW_HPP

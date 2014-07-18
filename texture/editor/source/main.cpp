@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
             cout << "usage:\n" <<
                     "new image:\t -n <filename> <width> <height>\n" <<
                     "open image:\t -o <filename>\n" << endl;
+			return 0;
         } else if(str == "-o") {
             if(argc > 2) {
                 editor.open(argv[2]);

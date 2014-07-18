@@ -31,7 +31,7 @@ public:
     public:
         Render() {}
         virtual ~Render() {}
-        virtual void init() = 0;
+		virtual int init() = 0;
         virtual void resize(const Size &s) = 0;
         virtual void dispose() = 0;
         virtual void display() = 0;
@@ -60,7 +60,7 @@ private:
     void handle();
 
 public:
-    void start();
+	int start();
 };
 
 Window::Window(const char *name, const Size &s, unsigned int flags) {
@@ -122,10 +122,13 @@ void Window::handle() {
     }
 }
 
-void Window::start() {
+int Window::start() {
     quit = false;
     if(render != nullptr) {
-        render->init();
+		int rv = 0;
+		if((rv = render->init()) != 0) {
+			return rv;
+		}
         render->resize(size);
     }
     while(!quit) {
@@ -138,6 +141,7 @@ void Window::start() {
     if(render != nullptr) {
         render->dispose();
     }
+	return 0;
 }
 
 #endif // WINDOW_HPP
