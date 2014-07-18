@@ -4,6 +4,8 @@
 #include<SDL2/SDL.h>
 #include<GL/glew.h>
 
+#include<asarone/exception/filenotfoundexception.hpp>
+
 class Texture
 {
 private:
@@ -22,7 +24,7 @@ public:
 		glDeleteTextures(1,&id);
 	}
 
-	void loadFromFile(const char *addr)
+	void loadFromFile(const char *addr) throw(FileNotFoundException)
 	{
 		bind();
 
@@ -36,6 +38,10 @@ public:
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, face->w, face->h, 0, GL_RGB, GL_UNSIGNED_BYTE, face->pixels);
 			SDL_FreeSurface(face);
+		}
+		else
+		{
+			throw FileNotFoundException(addr);
 		}
 
 		unbind();

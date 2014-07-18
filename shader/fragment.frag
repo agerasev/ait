@@ -1,6 +1,6 @@
 uniform sampler2D texture;
 
-const int TS = 256;
+const int TS = 16;
 const vec2 TS2 = vec2(TS,TS);
 
 void main(void)

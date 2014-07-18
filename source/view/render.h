@@ -4,11 +4,15 @@
 #include<asarone/window/glwindow.hpp>
 
 #include<cmath>
+#include<iostream>
+
 #include<asarone/util/const.hpp>
 
 #include<asarone/gl/vertexshader.hpp>
 #include<asarone/gl/fragmentshader.hpp>
 #include<asarone/gl/texture.hpp>
+
+#include<asarone/exception/exception.hpp>
 
 #include"renderprogram.h"
 
@@ -46,19 +50,35 @@ public:
 		prog = new RenderProgram();
 
 		tex = new Texture();
-		tex->loadFromFile("../texture/sierpinsky-high.bmp");
 
-		/* Need to add exceptions here */
+		try
+		{
+			tex->loadFromFile("../texture/sierpinsky-low.bmp");
+		}
+		catch (const Exception &e)
+		{
+			std::cerr << e.getMessage() << std::endl;
+			return 3;
+		}
 
-		vs->loadSourceFromFile("../shader/vertex.vert");
-		vs->compile();
-		fs->loadSourceFromFile("../shader/fragment.frag");
-		fs->compile();
 
-		prog->attach(vs);
-		prog->attach(fs);
-		prog->link();
-		prog->pull();
+		try
+		{
+			vs->loadSourceFromFile("../shader/vertex.vert");
+			vs->compile();
+			fs->loadSourceFromFile("../shader/fragment.frag");
+			fs->compile();
+
+			prog->attach(vs);
+			prog->attach(fs);
+			prog->link();
+			prog->pull();
+		}
+		catch (const Exception &e)
+		{
+			std::cerr << e.getMessage() << std::endl;
+			return 2;
+		}
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);

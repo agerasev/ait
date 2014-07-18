@@ -63,7 +63,11 @@ HEADERS += \
     asarone/gl/veretxbuffer.hpp \
     asarone/gl/framebuffer.hpp \
     view/renderprogram.h \
-    asarone/gl/texture.hpp
+    asarone/gl/texture.hpp \
+    asarone/exception/filenotfoundexception.hpp \
+    asarone/exception/compilationexception.hpp \
+    asarone/exception/linkageexception.hpp \
+    asarone/exception/exception.hpp
 
 OTHER_FILES += \
     ../shader/fragment.frag \

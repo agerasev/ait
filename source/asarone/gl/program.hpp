@@ -3,6 +3,7 @@
 
 #include"shader.hpp"
 #include<iostream>
+#include<asarone/exception/linkageexception.hpp>
 
 class Program
 {
@@ -13,19 +14,20 @@ private:
 		int link_ok;
 		glGetProgramiv(id, GL_LINK_STATUS, &link_ok);
 		if(!link_ok) {
-			std::cout << "Error attach shaders" << std::endl;
 			return false;
 		}
 		return true;
 	}
 
-	void logAttribute(GLint attrib, const GLchar *name) {
+	void logAttribute(GLint attrib, const GLchar *name)
+	{
 		if(attrib == -1)
 		{
 			std::cout << "Could not bind attribute " << name << std::endl;
 		}
 	}
-	void logUniform(GLint unif, const GLchar *name) {
+	void logUniform(GLint unif, const GLchar *name)
+	{
 		if(unif == -1)
 		{
 			std::cout << "Could not bind uniform " << name << std::endl;
@@ -37,25 +39,38 @@ public:
 	Program() {
 		id = glCreateProgram();
 	}
-	virtual ~Program() {
+	virtual ~Program()
+	{
 		glDeleteProgram(id);
 	}
 
-	void attach(const Shader *sh) {
+	void attach(const Shader *sh)
+	{
 		glAttachShader(id,sh->getID());
 	}
-	void detach(const Shader *sh) {
+	void detach(const Shader *sh)
+	{
 		glDetachShader(id,sh->getID());
 	}
-	bool link() {
+	void link() throw(LinkageException)
+	{
 		glLinkProgram(id);
-		return logLinking();
+		if(logLinking())
+		{
+			std::cout << "Shaders were successfully attached." << std::endl;
+		}
+		else
+		{
+			throw LinkageException("Could not attach shaders");
+		}
 	}
 
-	void enable() {
+	void enable()
+	{
 		glUseProgram(id);
 	}
-	void disable() {
+	void disable()
+	{
 		glUseProgram(0);
 	}
 

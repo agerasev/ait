@@ -16,10 +16,7 @@ public:
 
 #include <GL/glew.h>
 
-/*
 #include <iostream>
-using namespace std;
-*/
 
 GLWindow::GLWindow(const char *name, const Size &s, unsigned int flags) :
     Window(name,s,SDL_WINDOW_OPENGL|flags) {
@@ -30,21 +27,20 @@ GLWindow::GLWindow(const char *name, const Size &s, unsigned int flags) :
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,5);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,6);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,5);
-    SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetSwapInterval(1);
 
     GLenum glew_status = glewInit();
     if(GLEW_OK != glew_status)
     {
-       // cout << "Error: " << glewGetErrorString(glew_status) << endl;
+		std::cerr << "Error: " << glewGetErrorString(glew_status) << std::endl;
         return;
     }
-
-    /*
     if(!GLEW_VERSION_2_0)
     {
-        cout << "No support for OpenGL 2.0 found" << endl;
-    }
-    */
+		/* TODO:
+		 * in this case use old OpenGL */
+		std::cerr << "No support for OpenGL 2.0 found" << std::endl;
+	}
 
     glClearColor(0, 0, 0, 0);
     glViewport(0,0,s.w,s.h);
@@ -54,8 +50,7 @@ GLWindow::~GLWindow() {
 }
 
 void GLWindow::flip() {
-    SDL_GL_SwapWindow(window);
-    SDL_Delay(8);
+	SDL_GL_SwapWindow(window);
 }
 void GLWindow::resize(const Size &s) {
     size = s;

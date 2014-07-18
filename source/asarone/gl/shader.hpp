@@ -4,6 +4,10 @@
 #include<GL/glew.h>
 #include<iostream>
 #include<fstream>
+#include<string>
+
+#include<asarone/exception/compilationexception.hpp>
+#include<asarone/exception/filenotfoundexception.hpp>
 
 class Shader
 {
@@ -11,8 +15,10 @@ private:
 
 	GLuint id;
 
-	void logCompilation()
+	std::string logCompilation()
 	{
+		std::string message;
+
 		int   infologLen   = 0;
 		int   charsWritten = 0;
 		char *infoLog;
@@ -23,9 +29,11 @@ private:
 		{
 			infoLog = new char[infologLen];
 			glGetShaderInfoLog(id, infologLen, &charsWritten, infoLog);
-			std::cout << infoLog << std::endl;
+			message = infoLog;
 			delete[] infoLog;
 		}
+
+		return message;
 	}
 
 public:
@@ -40,7 +48,8 @@ public:
 		glDeleteShader(id);
 	}
 
-	bool loadSourceFromFile(const char *addr) {
+	void loadSourceFromFile(const char *addr) throw(FileNotFoundException)
+	{
 
 		int length;
 
@@ -48,8 +57,7 @@ public:
 		is.open(addr, std::ios::binary);
 		if(!is)
 		{
-			std::cout << "couldn't find " << addr << "file\n";
-			return false;
+			throw FileNotFoundException(addr);
 		}
 
 		is.seekg (0, std::ios::end);
@@ -64,17 +72,24 @@ public:
 		is.close();
 
 		glShaderSource(id, 1, const_cast<const GLchar**>(&src), nullptr);
-		return true;
 	}
 
-	bool compile()
+	void compile() throw(CompilationException)
 	{
 		glCompileShader(id);
-		logCompilation();
+		std::string log = logCompilation();
 
 		GLint st;
 		glGetShaderiv(id,GL_COMPILE_STATUS,&st);
-		return st==GL_TRUE?true:false;
+		if(st == GL_TRUE)
+		{
+			std::cout << log;
+			std::cout.flush();
+		}
+		else
+		{
+			throw CompilationException(log);
+		}
 	}
 
 	GLuint getID() const
