@@ -3,7 +3,6 @@ CONFIG += console
 CONFIG -= qt
 
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS_WARN_OFF -= -Wunused-parameter
 
 unix {
     LIBS += -lSDL2main -lSDL2 -lGLEW -lGL
@@ -19,55 +18,51 @@ SOURCES += \
     main.cpp
 
 HEADERS += \
-    util/vec.hpp \
-    util/mat.hpp \
-    view/window/window.h \
-    view/window/glwindow.h \
-    asarone/linalg/matn.hpp \
-    asarone/linalg/matnm.hpp \
-    asarone/linalg/vec.hpp \
-    asarone/linalg/vec2.hpp \
-    asarone/linalg/vec3.hpp \
-    asarone/linalg/vec4.hpp \
-    asarone/linalg/vecn.hpp \
-    asarone/thread/mutex.hpp \
-    asarone/thread/thread.hpp \
-    asarone/util/const.hpp \
-    asarone/util/op.hpp \
-    asarone/window/glwindow.hpp \
-    asarone/window/window.hpp \
-    model/land.h \
-    model/tile.h \
-    hextiling/hexarray.hpp \
-    hextiling/hexlocator.hpp \
-    linking/entity.hpp \
-    linking/link.hpp \
-    linking/linkin.hpp \
-    linking/linkout.hpp \
-    linking/linkset.hpp \
-    linking/image.hpp \
-    view/spectator.h \
-    view/render.h \
-    asarone/la/mat.hpp \
-    asarone/la/matn.hpp \
-    asarone/la/matnm.hpp \
-    asarone/la/vec.hpp \
-    asarone/la/vec2.hpp \
-    asarone/la/vec3.hpp \
-    asarone/la/vec4.hpp \
-    asarone/la/vecn.hpp \
-    asarone/gl/shader.hpp \
-    asarone/gl/program.hpp \
-    asarone/gl/vertexshader.hpp \
-    asarone/gl/fragmentshader.hpp \
-    asarone/gl/veretxbuffer.hpp \
-    asarone/gl/framebuffer.hpp \
-    view/renderprogram.h \
-    asarone/gl/texture.hpp \
-    asarone/exception/filenotfoundexception.hpp \
-    asarone/exception/compilationexception.hpp \
-    asarone/exception/linkageexception.hpp \
-    asarone/exception/exception.hpp
+	4u/complex/complex.hpp \
+	4u/complex/quaternion.hpp \
+	4u/exception/compilationexception.hpp \
+	4u/exception/exception.hpp \
+	4u/exception/filenotfoundexception.hpp \
+	4u/exception/glexception.hpp \
+	4u/exception/linkageexception.hpp \
+	4u/gl/fragmentshader.hpp \
+	4u/gl/framebuffer.hpp \
+	4u/gl/program.hpp \
+	4u/gl/shader.hpp \
+	4u/gl/texture.hpp \
+	4u/gl/vertexbuffer.hpp \
+	4u/gl/vertexshader.hpp \
+	4u/la/mat.hpp \
+	4u/la/matn.hpp \
+	4u/la/matnm.hpp \
+	4u/la/vec.hpp \
+	4u/la/vec2.hpp \
+	4u/la/vec3.hpp \
+	4u/la/vec4.hpp \
+	4u/la/vecn.hpp \
+	4u/random/contrand.hpp \
+	4u/random/diskrand.hpp \
+	4u/random/rand.hpp \
+	4u/random/sphericrand.hpp \
+	4u/thread/mutex.hpp \
+	4u/thread/thread.hpp \
+	4u/thread/threadlocalstorage.hpp \
+	4u/util/const.hpp \
+	4u/util/op.hpp \
+	4u/window/event.hpp \
+	4u/window/glwindow.hpp \
+	4u/window/glxwindow.hpp \
+	4u/window/sdlwindow.hpp \
+	4u/window/window.hpp \
+	model/hex/hexarray.hpp \
+	model/hex/hexlocator.hpp \
+    model/tile.hpp \
+    view/render.hpp \
+    view/renderprogram.hpp \
+    view/spectator.hpp \
+    model/map.hpp \
+    model/region.hpp \
+	view/mapview.hpp
 
 OTHER_FILES += \
     ../shader/fragment.frag \

@@ -1,20 +1,26 @@
 #include<iostream>
 
-#include<asarone/window/glwindow.hpp>
-#include"view/render.h"
-
 #include<SDL2/SDL.h>
 
-int main(int argc, char *argv[]) {
+#include<4u/window/glwindow.hpp>
+#include"view/render.hpp"
 
-    SDL_Init(SDL_INIT_VIDEO);
+#include"model/map.hpp"
+#include"view/mapview.hpp"
+
+int main(int , char *[]) {
+
+	SDL_Init(SDL_INIT_VIDEO);
+
+	Map map(4,4);
 
 	GLWindow window("ait",Window::Size(800,600),SDL_WINDOW_RESIZABLE);
 	Render render;
 	window.setRender(&render);
-	int ok = window.start();
+
+	window.start();
 
     SDL_Quit();
 
-	return ok;
+	return 0;
 }
