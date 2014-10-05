@@ -1,0 +1,4 @@
+#ifndef REGIONVIEW_HPP
+#define REGIONVIEW_HPP
+
+#endif // REGIONVIEW_HPP
