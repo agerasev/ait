@@ -38,6 +38,22 @@ public:
 	{
 		return locator;
 	}
+	HexArray<Tile>::const_iterator begin() const
+	{
+		return tiles.begin();
+	}
+	HexArray<Tile>::const_iterator end() const
+	{
+		return tiles.end();
+	}
+	HexArray<Tile>::iterator begin()
+	{
+		return tiles.begin();
+	}
+	HexArray<Tile>::iterator end()
+	{
+		return tiles.end();
+	}
 };
 
 #endif // REGION_H

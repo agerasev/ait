@@ -7,6 +7,8 @@
 #include<4u/gl/program.hpp>
 #include<4u/gl/texture.hpp>
 
+#include<4u/gl/vertexbuffer.hpp>
+
 class RenderProgram : public Program
 {
 private:
@@ -62,13 +64,31 @@ public:
 	{
 		glVertexAttribPointer(coord, 2, GL_FLOAT, GL_FALSE, 0, p);
 	}
+	void pointCoord(VertexBuffer &buf)
+	{
+		buf.bind();
+		pointCoord(nullptr);
+		buf.unbind();
+	}
 	void pointColor(const float *p = nullptr)
 	{
 		glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 0, p);
 	}
+	void pointColor(VertexBuffer &buf)
+	{
+		buf.bind();
+		pointColor(nullptr);
+		buf.unbind();
+	}
 	void pointTexCoord(const float *p = nullptr)
 	{
 		glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, p);
+	}
+	void pointTexCoord(VertexBuffer &buf)
+	{
+		buf.bind();
+		pointTexCoord(nullptr);
+		buf.unbind();
 	}
 
 	virtual void pull()

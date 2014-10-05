@@ -8,6 +8,7 @@ class VertexBuffer
 private:
 	GLuint id;
 	GLuint length;
+	GLuint typesize;
 public:
 	VertexBuffer() {
 		length = 0;
@@ -17,24 +18,29 @@ public:
 		unbind();
 		glDeleteBuffers(1, &id);
 	}
-	void bind() {
+	void bind()
+	{
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 	}
-	void unbind() {
+	void unbind()
+	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	template <typename T>
-	void buffer(T *varr, GLuint vlen) {
+	void buffer(T *varr, GLuint vlen)
+	{
 		bind();
 		length = vlen;
-		glBufferData(GL_ARRAY_BUFFER, vlen*sizeof(T), varr, GL_STATIC_DRAW);
+		typesize = sizeof(T);
+		glBufferData(GL_ARRAY_BUFFER, vlen*typesize, varr, GL_STATIC_DRAW);
 		unbind();
 	}
-	virtual void draw()
+	GLuint getSize() const
 	{
-		glDrawArrays(GL_TRIANGLES,0,length);
+		return length*typesize;
 	}
-	GLuint size() const {
+	GLuint getLength() const
+	{
 		return length;
 	}
 };

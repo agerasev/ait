@@ -41,6 +41,7 @@ public:
 	virtual const Tile &getTile(const ivec2 &pos) const = 0;
 	/* Size */
 	virtual int getSize() const = 0;
+	virtual const HexLocator &getLocator() const = 0;
 };
 
 class MapWriter : public MapReader, public MapWriterHandle
@@ -128,6 +129,10 @@ public:
 	virtual int getSize() const override
 	{
 		return map_size;
+	}
+	virtual const HexLocator &getLocator() const override
+	{
+		return locator;
 	}
 
 	/* MapWriter */

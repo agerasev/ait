@@ -7,33 +7,41 @@
 
 #include<4u/gl/vertexbuffer.hpp>
 
+#include"regionview.hpp"
+
 class MapView
 {
 private:
 	MapReaderHandle &map_handle;
-	HexArray<VertexBuffer> coord,color,texcoord;
+	HexArray<RegionView*> *regions = nullptr;
+
 public:
-	MapView(MapReaderHandle &mh, int size) :
-		map_handle(mh),
-		coord(size),
-		color(size),
-		texcoord(size)
+	MapView(MapReaderHandle &mh) :
+		map_handle(mh)
 	{
 		map_handle.read([this](MapReader &map){
+			regions = new HexArray<RegionView*>(map.getSize());
 			for(auto i = map.begin(); i != map.end(); ++i)
 			{
-				std::vector<float> coord_buffer, color_buffer, texcoord_buffer;
-				/*
-				for(const Tile &t : **i)
-				{
-					// copy coords to buffer
-				}
-				*/
-				coord(~i).buffer(coord_buffer.data(),coord_buffer.size());
-				color(~i).buffer(color_buffer.data(),color_buffer.size());
-				texcoord(~i).buffer(texcoord_buffer.data(),texcoord_buffer.size());
+				regions->get(~i) = new RegionView(*i);
 			}
 		});
+	}
+	HexArray<RegionView*>::iterator begin()
+	{
+		return regions->begin();
+	}
+	HexArray<RegionView*>::iterator end()
+	{
+		return regions->end();
+	}
+	HexArray<RegionView*>::const_iterator begin() const
+	{
+		return static_cast<const HexArray<RegionView*> * const>(regions)->begin();
+	}
+	HexArray<RegionView*>::const_iterator end() const
+	{
+		return static_cast<const HexArray<RegionView*> * const>(regions)->end();
 	}
 };
 

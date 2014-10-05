@@ -11,12 +11,11 @@
 template <class T>
 class HexArray
 {
-private:
-    template <typename TMap>
-    class iterator_template
+public:
+	class iterator
     {
     private:
-		TMap *_map;
+		HexArray<T> *_map;
         ivec2 _pos;
         int _width;
         int _end_x;
@@ -29,14 +28,14 @@ private:
             return (f_y>0)?(-_width):(-_width - f_y);
         }
     public:
-		iterator_template(TMap *c_map, ivec2 c_pos):
+		iterator(HexArray<T> *c_map, ivec2 c_pos):
             _map(c_map),
             _pos(c_pos)
         {
             _width = _map->width();
             _end_x = _get_end_x(_pos.y());
         }
-        ~iterator_template()
+		~iterator()
         {
 
         }
@@ -45,12 +44,12 @@ private:
             //std::cout << _pos.x << ',' << _pos.y << std::endl;
             return _map->get(_pos);
         }
-        T operator *() const
+		const T &operator *() const
         {
             //std::cout << _pos.x << ',' << _pos.y << std::endl;
             return _map->get(_pos);
         }
-        iterator_template<TMap> &operator ++ ()
+		iterator &operator ++ ()
         {
             ++_pos.x();
             if(_pos.x() > _end_x)
@@ -69,18 +68,75 @@ private:
         {
             return _pos;
         }
-        bool operator == (const iterator_template<TMap> &f_iter)
+		bool operator == (const iterator &f_iter)
         {
             return (f_iter.getPos()==_pos)?true:false;
         }
-        bool operator != (const iterator_template<TMap> &f_iter)
+		bool operator != (const iterator &f_iter)
         {
             return (f_iter.getPos()!=_pos)?true:false;
         }
-    };
-public:
-    typedef iterator_template<HexArray> iterator;
-    typedef iterator_template<const HexArray> const_iterator;
+	};
+	class const_iterator
+	{
+	private:
+		const HexArray<T> *_map;
+		ivec2 _pos;
+		int _width;
+		int _end_x;
+		int _get_end_x(int f_y)
+		{
+			return (f_y<0)?(_width):(_width - f_y);
+		}
+		int _get_begin_x(int f_y)
+		{
+			return (f_y>0)?(-_width):(-_width - f_y);
+		}
+	public:
+		const_iterator(const HexArray<T> *c_map, ivec2 c_pos):
+			_map(c_map),
+			_pos(c_pos)
+		{
+			_width = _map->width();
+			_end_x = _get_end_x(_pos.y());
+		}
+		~const_iterator()
+		{
+
+		}
+		const T &operator *() const
+		{
+			//std::cout << _pos.x << ',' << _pos.y << std::endl;
+			return _map->get(_pos);
+		}
+		const_iterator &operator ++ ()
+		{
+			++_pos.x();
+			if(_pos.x() > _end_x)
+			{
+				++_pos.y();
+				_pos.x() = _get_begin_x(_pos.y());
+				_end_x = _get_end_x(_pos.y());
+			}
+			return (*this);
+		}
+		ivec2 getPos() const
+		{
+			return _pos;
+		}
+		ivec2 operator ~ () const
+		{
+			return _pos;
+		}
+		bool operator == (const const_iterator &f_iter)
+		{
+			return (f_iter.getPos()==_pos)?true:false;
+		}
+		bool operator != (const const_iterator &f_iter)
+		{
+			return (f_iter.getPos()!=_pos)?true:false;
+		}
+	};
 private:
     T **_elem;
 	int _width;

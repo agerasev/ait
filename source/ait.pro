@@ -62,7 +62,9 @@ HEADERS += \
     view/spectator.hpp \
     model/map.hpp \
     model/region.hpp \
-	view/mapview.hpp
+	view/mapview.hpp \
+    view/regionview.hpp \
+    view/input.hpp
 
 OTHER_FILES += \
     ../shader/fragment.frag \

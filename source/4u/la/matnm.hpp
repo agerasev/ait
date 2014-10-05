@@ -111,7 +111,7 @@ inline tvecn<T,N> operator *(const tmatnm<T,N,M> &m, const tvecn<T,M> &v) {
 }
   //Product of matrices
 template <typename T, int N, int M, int L>
-inline tmatnm<T,N,M> operator +(const tmatnm<T,L,M> &a, const tmatnm<T,N,L> &b) {
+inline tmatnm<T,N,M> operator *(const tmatnm<T,L,M> &a, const tmatnm<T,N,L> &b) {
   tmatnm<T,N,M> c;
   for(int i = 0; i < M; ++i) {
 	  for(int j = 0; j < N; ++j) {
