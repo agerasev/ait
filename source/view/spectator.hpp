@@ -8,7 +8,7 @@ class Spectator
 {
 private:
 	vec2 pos = nullvec2;
-	mat2 ori = unimat2;
+	mat2 ori = mat2{0,1e-2,1e-2,0};
 public:
 	void setPos(const vec2 &p)
 	{

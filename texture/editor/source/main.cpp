@@ -1,8 +1,8 @@
 #include<iostream>
 #include<string>
 
-#include"glwindow.h"
-#include"editor.h"
+#include"glwindow.hpp"
+#include"editor.hpp"
 using namespace std;
 
 int main(int argc, char *argv[]) {

@@ -1,6 +1,6 @@
-#include "glwindow.h"
+#include "glwindow.hpp"
 
-#include "window.h"
+#include "window.hpp"
 
 #include <GL/glew.h>
 

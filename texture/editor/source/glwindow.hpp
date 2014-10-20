@@ -1,7 +1,7 @@
-#ifndef GLWINDOW_H
-#define GLWINDOW_H
+#ifndef GLWINDOW_HPP
+#define GLWINDOW_HPP
 
-#include "window.h"
+#include "window.hpp"
 
 using namespace std;
 
@@ -15,4 +15,4 @@ public:
     virtual void resize(const Size &s);
 };
 
-#endif // GLWINDOW_H
+#endif // GLWINDOW_HPP

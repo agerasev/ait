@@ -13,7 +13,7 @@ SOURCES += \
     editor.cpp
 
 HEADERS += \
-    window.h \
-    glwindow.h \
-    editor.h \
-    api.h
+    api.hpp \
+    editor.hpp \
+    glwindow.hpp \
+    window.hpp

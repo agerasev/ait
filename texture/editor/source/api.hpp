@@ -1,5 +1,5 @@
-#ifndef API_H
-#define API_H
+#ifndef API_HPP
+#define API_HPP
 
 #include<SDL2/SDL.h>
 #include<SDL/SDL_image.h>
@@ -18,4 +18,4 @@ public:
     }
 };
 
-#endif // API_H
+#endif // API_HPP

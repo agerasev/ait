@@ -6,12 +6,13 @@ QMAKE_CXXFLAGS += -std=c++11
 
 unix {
     LIBS += -lSDL2main -lSDL2 -lGLEW -lGL
+	DEPENDPATH += ./*
 }
 
 win32 {
     INCLUDEPATH += C:\GLEW-MinGW\include C:\SDL2-2.0.3\i686-w64-mingw32\include
     LIBS += -lmingw32 -LC:\SDL2-2.0.3\i686-w64-mingw32\lib -lsdl2main -lsdl2 -LC:\GLEW-MinGW\lib -lglew32 -lopengl32
-    DEPENDPATH += .
+    DEPENDPATH += ./*
 }
 
 SOURCES += \
@@ -64,8 +65,10 @@ HEADERS += \
     model/region.hpp \
 	view/mapview.hpp \
     view/regionview.hpp \
-    view/input.hpp
+    view/input.hpp \
+    model/generator/mapgenerator.hpp
 
 OTHER_FILES += \
     ../shader/fragment.frag \
-    ../shader/vertex.vert
+    ../shader/vertex.vert \
+    TODO.md

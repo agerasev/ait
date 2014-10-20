@@ -1,10 +1,10 @@
-#ifndef EDITOR_H
-#define EDITOR_H
+#ifndef EDITOR_HPP
+#define EDITOR_HPP
 
 #include<iostream>
 
-#include"window.h"
-#include"glwindow.h"
+#include"window.hpp"
+#include"glwindow.hpp"
 
 #include<SDL2/SDL.h>
 
@@ -21,6 +21,7 @@ private:
 	Uint8 lc[4] = { 0xff, 0xff, 0xff, 0xff }; // *
 	int shades = 8;
 	bool left = false, right = false; // mouse buttons
+	bool grid = false; // show grid
 
 public:
     Editor() {
@@ -34,7 +35,7 @@ public:
 
 	void create(const char *name, int w, int h) {
 		filename = name;
-        bitmap = SDL_CreateRGBSurface(SDL_SWSURFACE,w,h,24,0x0000ff,0x00ff00,0xff0000,0x000000);
+		bitmap = SDL_CreateRGBSurface(SDL_SWSURFACE,w,h,24,0xff0000,0x00ff00,0x0000ff,0x000000);
     }
 
     void save() {
@@ -50,8 +51,15 @@ public:
 
 	// override Listener methods
     virtual void handle(const SDL_Event &event) {
-        if(event.type == SDL_MOUSEBUTTONDOWN) {
-            if(event.button.button == SDL_BUTTON_LEFT) {
+		if(event.type == SDL_KEYDOWN)
+		{
+			if(event.key.keysym.sym == SDLK_g)
+			{
+				grid = !grid;
+			}
+		}
+		else if(event.type == SDL_MOUSEBUTTONDOWN) {
+			if(event.button.button == SDL_BUTTON_LEFT) {
 				left = true;
             }
 			else if(event.button.button == SDL_BUTTON_RIGHT)
@@ -199,6 +207,35 @@ public:
 		glVertex2f(0.5*size.w/6.0, 0.5*size.h);
 
 		glEnd();
+
+		if(grid)
+		{
+			glColor3f(1.0f,0.0f,1.0f);
+			glBegin(GL_LINES);
+			glVertex2d(0.0,0.0);
+			glVertex2d(1.0/3.0*size.w,size.h);
+			glVertex2d(1.0/3.0*size.w,size.h);
+			glVertex2d(size.w,size.h);
+			glVertex2d(0.0,0.0);
+			glVertex2d(2.0/3.0*size.w,0.0);
+			glVertex2d(2.0/3.0*size.w,0.0);
+			glVertex2d(size.w,size.h);
+			glVertex2d(1.0/6.0*size.w,0.5*size.h);
+			glVertex2d(1.0/3.0*size.w,0.0);
+			glVertex2d(1.0/6.0*size.w,0.5*size.h);
+			glVertex2d(0.5*size.w,0.5*size.h);
+			glVertex2d(1.0/3.0*size.w,0.0);
+			glVertex2d(0.5*size.w,0.5*size.h);
+			glVertex2d(5.0/6.0*size.w,0.5*size.h);
+			glVertex2d(2.0/3.0*size.w,size.h);
+			glVertex2d(5.0/6.0*size.w,0.5*size.h);
+			glVertex2d(0.5*size.w,0.5*size.h);
+			glVertex2d(2.0/3.0*size.w,size.h);
+			glVertex2d(0.5*size.w,0.5*size.h);
+			glVertex2d(1.0/3.0*size.w,size.h);
+			glVertex2d(2.0/3.0*size.w,0.0);
+			glEnd();
+		}
 
         glFlush();
 	}

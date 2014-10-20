@@ -10,15 +10,19 @@
 
 class Region
 {
+public:
+	static const int SIZE = 0;
+	typedef HexLocator<SIZE> Locator;
+
+	Tile::Type type;
+	float height;
+
 private:
 	HexArray<Tile> tiles;
-	HexLocator locator;
-	const int size;
+
 public:
-	Region(int s) :
-		tiles(s),
-		locator(1.0,s),
-		size(s)
+	Region() :
+		tiles(SIZE)
 	{
 
 	}
@@ -29,14 +33,6 @@ public:
 	const Tile &getTile(const ivec2 &pos) const
 	{
 		return tiles(pos);
-	}
-	int getSize() const
-	{
-		return size;
-	}
-	const HexLocator &getLocator() const
-	{
-		return locator;
 	}
 	HexArray<Tile>::const_iterator begin() const
 	{

@@ -6,11 +6,10 @@
 #include<4u/la/vec.hpp>
 #include<4u/thread/mutex.hpp>
 
-#include"hex/hexarray.hpp"
-#include"hex/hexlocator.hpp"
+#include<model/hex/hexarray.hpp>
+#include<model/hex/hexlocator.hpp>
 
-#include"region.hpp"
-
+#include<model/region.hpp>
 class Map;
 
 class MapReader;
@@ -39,9 +38,8 @@ public:
 	/* Direct access */
 	virtual const Region *getRegion(const ivec2 &rpos) const = 0;
 	virtual const Tile &getTile(const ivec2 &pos) const = 0;
-	/* Size */
-	virtual int getSize() const = 0;
-	virtual const HexLocator &getLocator() const = 0;
+	/* Hash */
+	virtual unsigned int getHash() const = 0;
 };
 
 class MapWriter : public MapReader, public MapWriterHandle
@@ -56,26 +54,25 @@ public:
 };
 
 /* Implementation */
-
 class Map : public MapWriter
 {
+public:
+	static const int SIZE = 64;
+	static const int REG_SIZE = Region::SIZE;
+	typedef HexLocator<SIZE> Locator;
+
 private:
-	const int map_size;
-	const int reg_size;
 	HexArray<Region*> regions;
-	HexLocator locator;
 	Mutex mutex; /* TODO: Replce Mutex with RWCond */
+	unsigned int hash = 0;
 
 public:
-	Map(int ms, int rs) :
-		map_size(ms),
-		reg_size(rs),
-		regions(map_size),
-		locator(1.0,map_size)
+	Map() :
+		regions(SIZE)
 	{
 		for(Region *&reg : regions)
 		{
-			reg = new Region(reg_size);
+			reg = new Region();
 		}
 	}
 
@@ -104,6 +101,7 @@ public:
 		{
 			func(static_cast<MapWriter&>(*this));
 		}
+		++hash;
 		mutex.unlock();
 	}
 
@@ -122,17 +120,13 @@ public:
 	}
 	virtual const Tile &getTile(const ivec2 &pos) const override
 	{
-		ivec2 rpos = locator.getRegionByTile(pos);
-		ivec2 tpos = pos - locator.getRegionCenterTile(rpos);
+		ivec2 rpos = Locator::getRegionByTile(pos);
+		ivec2 tpos = pos - Locator::getRegionCenterTile(rpos);
 		return getRegion(rpos)->getTile(tpos);
 	}
-	virtual int getSize() const override
+	virtual unsigned int getHash() const
 	{
-		return map_size;
-	}
-	virtual const HexLocator &getLocator() const override
-	{
-		return locator;
+		return hash;
 	}
 
 	/* MapWriter */
@@ -150,8 +144,8 @@ public:
 	}
 	virtual Tile &getTile(const ivec2 &pos) override
 	{
-		ivec2 rpos = locator.getRegionByTile(pos);
-		ivec2 tpos = pos - locator.getRegionCenterTile(rpos);
+		ivec2 rpos = Locator::getRegionByTile(pos);
+		ivec2 tpos = pos - Locator::getRegionCenterTile(rpos);
 		return getRegion(rpos)->getTile(tpos);
 	}
 };

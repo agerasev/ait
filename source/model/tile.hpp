@@ -1,15 +1,27 @@
 #ifndef TILE_H
 #define TILE_H
 
-class Tile
+struct Tile
 {
-private:
-	unsigned int type;
+public:
+	enum Type
+	{
+		NONE = 0,
+		OCEAN,
+		SHELF,
+		SAND,
+		GRASS
+	};
+
+public:
+	Type type;
+	float height;
 
 public:
 	Tile()
 	{
-		type = 0;
+		type = NONE;
+		height = 0.0f;
 	}
 };
 

@@ -7,21 +7,23 @@
 #include"view/input.hpp"
 
 #include"model/map.hpp"
+#include"model/generator/mapgenerator.hpp"
 #include"view/mapview.hpp"
 
 int main(int, char *[]) {
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	Map map(0,4);
+	Map map;
+	MapGenerator generator(0xabcdef);
+	generator.generate(static_cast<MapWriterHandle&>(map));
 
 	GLWindow window("ait",Window::Size(800,600),SDL_WINDOW_RESIZABLE);
 
 	MapView map_view(static_cast<MapReaderHandle&>(map));
-	Spectator spect;
 
-	Render render(&map_view,&spect);
-	Input input(&spect);
+	Render render(&map_view);
+	Input input(&render,&generator,/*remove!!!*/static_cast<MapWriterHandle*>(&map));
 
 	window.setRender(&render);
 	window.setListener(&input);

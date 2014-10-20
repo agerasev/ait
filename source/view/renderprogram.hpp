@@ -12,8 +12,9 @@
 class RenderProgram : public Program
 {
 private:
-	GLuint model_matrix;
-	GLuint view_matrix;
+	GLuint projection_matrix;
+	GLuint modelview_matrix;
+	GLuint translation;
 	GLuint texsize;
 
 	GLuint coord;
@@ -34,11 +35,15 @@ public:
 
 	void setProjectionMatrix(const fmat2 &m)
 	{
-		glUniformMatrix2fv(model_matrix, 1, GL_FALSE, m.data);
+		glUniformMatrix2fv(projection_matrix, 1, GL_FALSE, m.data);
 	}
 	void setModelviewMatrix(const fmat2 &m)
 	{
-		glUniformMatrix2fv(view_matrix, 1, GL_FALSE, m.data);
+		glUniformMatrix2fv(modelview_matrix, 1, GL_FALSE, m.data);
+	}
+	void setTranslation(const fvec2 &m)
+	{
+		glUniform2fv(translation, 1, m.data);
 	}
 
 	void bindTexture(const Texture *t)
@@ -93,8 +98,9 @@ public:
 
 	virtual void pull()
 	{
-		model_matrix = getUniform("model");
-		view_matrix = getUniform("view");
+		modelview_matrix = getUniform("modelview");
+		projection_matrix = getUniform("projection");
+		translation = getUniform("translation");
 
 		coord = getAttribute("coord");
 		color = getAttribute("color");

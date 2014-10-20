@@ -39,6 +39,31 @@ struct tmatnm {
 				data[i] = static_cast<T>(*il);
 		}
 	}
+private:
+	template <int Len, typename _T, int _N, int _M>
+	struct __Unroller__
+	{
+		template <typename S, typename ... Args>
+		inline static void unroll(tmatnm<_T,_N,_M> &mat, S &arg, Args &... args)
+		{
+			mat.data[_N*_M - Len] = static_cast<_T>(arg);
+			__Unroller__<Len-1,_T,_N,_M>::unroll(mat, args ...);
+		}
+	};
+	template<typename _T, int _N, int _M>
+	struct __Unroller__<1,_T,_N,_M>
+	{
+		template <typename S>
+		inline static void unroll(tmatnm<_T,_N,_M> &mat, S &arg)
+		{
+			mat.data[_N*_M - 1] = static_cast<_T>(arg);
+		}
+	};
+public:
+	template <typename ... Args>
+	inline tmatnm(Args ... args) {
+		__Unroller__<N*M,T,N,M>::unroll(*this,args...);
+	}
 	//Access operators
 	inline T &operator ()(int x, int y) {
 		return data[y*N + x];
@@ -102,8 +127,8 @@ inline tmatnm<T,N,M> operator *(const tmatnm<T,N,M> &m, T s) {
 }
   //Multiplication by vector
 template <typename T, int N, int M>
-inline tvecn<T,N> operator *(const tmatnm<T,N,M> &m, const tvecn<T,M> &v) {
-	tvecn<T,N> c;
+inline tvecn<T,M> operator *(const tmatnm<T,N,M> &m, const tvecn<T,N> &v) {
+	tvecn<T,M> c;
 	for(int i = 0; i < M; ++i) {
 		c(i) = m.row(i)*v;
 	}

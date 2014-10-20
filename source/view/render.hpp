@@ -35,11 +35,13 @@ private:
 	fmat2 projection_matrix = unifmat2;
 
 	MapView *map_view = nullptr;
-	Spectator *spect = nullptr;
+	Spectator spect;
+
+	ivec2 resolution;
 
 public:
-	Render(MapView *mv, Spectator *sp) :
-		map_view(mv), spect(sp)
+	Render(MapView *mv) :
+		map_view(mv)
 	{
 
 	}
@@ -54,7 +56,7 @@ public:
 
 		try
 		{
-			tex->loadFromFile("../texture/owl.bmp");
+			tex->loadFromFile("../texture/terrian.bmp");
 		}
 		catch (const Exception &e)
 		{
@@ -87,20 +89,25 @@ public:
 	virtual void resize(const Window::Size &s)
 	{
 		projection_matrix(0,0) = static_cast<float>(s.h)/s.w;
+		resolution = ivec2(s.w,s.h);
 	}
 
 	virtual void display()
 	{
+		map_view->update();
+		
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		prog->enable();
+		prog->setTranslation(spect.getPos());
 		prog->setProjectionMatrix(projection_matrix);
-		prog->setModelviewMatrix(spect->getOri());
+		prog->setModelviewMatrix(spect.getOri());
 		prog->bindTexture(tex);
 		prog->enableAttribs();
 
 		for(auto i = map_view->begin(); i != map_view->end(); ++i)
 		{
+			prog->setTranslation(spect.getPos() + MapView::Locator::getTileCenterPos(MapView::Locator::getRegionCenterTile(~i)));
 			prog->pointCoord((*i)->getCoordBuffer());
 			prog->pointColor((*i)->getColorBuffer());
 			prog->pointTexCoord((*i)->getTexCoordBuffer());
@@ -120,6 +127,16 @@ public:
 		delete prog;
 		delete vs;
 		delete fs;
+	}
+
+	ivec2 getResolution() const
+	{
+		return resolution;
+	}
+
+	Spectator &getSpectator()
+	{
+		return spect;
 	}
 };
 

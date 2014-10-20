@@ -14,17 +14,33 @@ class MapView
 private:
 	MapReaderHandle &map_handle;
 	HexArray<RegionView*> *regions = nullptr;
+	unsigned int hash;
 
 public:
+	typedef Region::Locator Locator;
 	MapView(MapReaderHandle &mh) :
 		map_handle(mh)
 	{
 		map_handle.read([this](MapReader &map){
-			regions = new HexArray<RegionView*>(map.getSize());
+			regions = new HexArray<RegionView*>(Map::SIZE);
 			for(auto i = map.begin(); i != map.end(); ++i)
 			{
 				regions->get(~i) = new RegionView(*i);
 			}
+			hash = map.getHash();
+		});
+	}
+	void update()
+	{
+		map_handle.read([this](MapReader &map){
+			if(hash != map.getHash())
+			{
+				for(auto i = map.begin(); i != map.end(); ++i)
+				{
+					regions->get(~i)->update(*i);
+				}
+			}
+			hash = map.getHash();
 		});
 	}
 	HexArray<RegionView*>::iterator begin()

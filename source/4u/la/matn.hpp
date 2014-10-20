@@ -36,6 +36,31 @@ struct tmatnm<T,N,N> {
 				data[i] = static_cast<T>(*il);
 		}
 	}
+private:
+	template <int Len, typename _T, int _N>
+	struct __Unroller__
+	{
+		template <typename S, typename ... Args>
+		inline static void unroll(tmatnm<_T,_N,_N> &mat, S &arg, Args &... args)
+		{
+			mat.data[_N*_N - Len] = static_cast<_T>(arg);
+			__Unroller__<Len-1,_T,_N>::unroll(mat, args ...);
+		}
+	};
+	template<typename _T, int _N>
+	struct __Unroller__<1,_T,_N>
+	{
+		template <typename S>
+		inline static void unroll(tmatnm<_T,_N,_N> &mat, S &arg)
+		{
+			mat.data[_N*_N - 1] = static_cast<_T>(arg);
+		}
+	};
+public:
+	template <typename ... Args>
+	inline tmatnm(Args ... args) {
+		__Unroller__<N*N,T,N>::unroll(*this,args...);
+	}
 	//Access operators
 	inline T &operator ()(int x, int y) {
         return data[y*N + x];
@@ -77,20 +102,55 @@ struct tmatnm<T,N,N> {
         return c;
     }
 	//Determinant
-    inline T cofactor(int x, int y) {
+	inline T cofactor(int x, int y) const {
 		return (1 - 2*((x+y)%2))*this->sub(x,y).det();
 	}
-    inline T det() {
-		if(N <= 1) {
-			return *(this->data);
-		} else {
-			T c = static_cast<T>(0);
+
+	/* I need to create struct here because function
+	 * template partial specialization is not allowed */
+private:
+	template <typename _T, int _N>
+	struct __Determinator__
+	{
+		inline static _T det(const tmatnm<_T,_N,_N> &mat)
+		{
+			_T c = static_cast<_T>(0);
 			const int rc = 0;
 			for(int i = 0; i < N; ++i) {
-				c += cofactor(i,rc);
+				c += mat(i,rc)*mat.cofactor(i,rc);
 			}
 			return c;
 		}
+	};
+	template <typename _T>
+	struct __Determinator__<_T,1>
+	{
+		inline static _T det(const tmatnm<_T,1,1> &mat)
+		{
+			return mat.data[0];
+		}
+	};
+public:
+	inline T det() const {
+		return __Determinator__<T,N>::det(*this);
+	}
+	/* Adjugate matrix */
+	inline tmatnm<T,N,N> adj() const
+	{
+		tmatnm<T,N,N> ret;
+		for(int i = 0; i < N; ++i)
+		{
+			for(int j = 0; j < N; ++j)
+			{
+				ret(j,i) = cofactor(i,j);
+			}
+		}
+		return ret;
+	}
+	/* Inverse matrix */
+	inline tmatnm<T,N,N> invert() const
+	{
+		return this->adj()/this->det();
 	}
 };
 

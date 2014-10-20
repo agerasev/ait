@@ -44,6 +44,11 @@ public:
             //std::cout << _pos.x << ',' << _pos.y << std::endl;
             return _map->get(_pos);
         }
+		T *operator ->()
+		{
+			//std::cout << _pos.x << ',' << _pos.y << std::endl;
+			return &_map->get(_pos);
+		}
 		const T &operator *() const
         {
             //std::cout << _pos.x << ',' << _pos.y << std::endl;
@@ -108,6 +113,11 @@ public:
 		{
 			//std::cout << _pos.x << ',' << _pos.y << std::endl;
 			return _map->get(_pos);
+		}
+		const T *operator ->() const
+		{
+			//std::cout << _pos.x << ',' << _pos.y << std::endl;
+			return &_map->get(_pos);
 		}
 		const_iterator &operator ++ ()
 		{
