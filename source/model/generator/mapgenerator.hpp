@@ -17,7 +17,7 @@ private:
 	ContRandInt rand;
 
 	
-	const float life_density_factor = 0.32;
+	const float life_density_factor = 0.36;
 	struct LifeState
 	{
 	public:
@@ -25,8 +25,6 @@ private:
 		bool pre_alive = false;
 		bool track = false;
 	};
-	
-	HexArray<LifeState> life;
 	
 	/* Params */
 	const float grow_factor = 4.0;
@@ -39,67 +37,26 @@ private:
 
 public:
 	MapGenerator(unsigned int /*s*/) :
-		seed(time(NULL)), rand(seed),
-		life(Map::SIZE)
+		seed(time(NULL)), rand(seed)
 	{
 
 	}
 
 	void generate(MapWriterHandle &map_handle)
 	{
-		/* Generate life */
-		for(int i = 0; i < life_density_factor*Map::SIZE*Map::SIZE; ++i)
-		{
-			ivec2 p = random<(3*Map::SIZE)/4>();
-			life.get(p).alive = true;
-			life.get(p).track = true;
-		}
-		
-		copyToMap(map_handle);
-		
-		/*
 		genSoil(map_handle);
 		genMoisture(map_handle);
 		genVegetation(map_handle);
-		*/
 	}
 	
 	void step(MapWriterHandle &map_handle)
 	{
-		/* Copy previous state */
-		for(LifeState &ls : life)
-		{
-			ls.pre_alive = ls.alive;
-			ls.track = ls.track || ls.alive;
-			ls.alive = false;
-		}
 		
-		/* Life step */
-		for(auto i = life.begin(); i != life.end(); ++i)
-		{
-			int count = 0;
-			Map::Locator::getNeighbours(~i,[&count,this](const ivec2 &p){
-				if(life(p).pre_alive)
-				{
-					++count;
-				}
-			});
-			if(i->pre_alive)
-			{
-				i->alive = (count == 3);
-			}
-			else
-			{
-				i->alive = (count == 2);
-			}
-		}
-		
-		copyToMap(map_handle);
 	}
 	
-	void copyToMap(MapWriterHandle &map_handle)
+	void copyToMap(MapWriterHandle &map_handle, HexArray<LifeState> &life)
 	{
-		map_handle.write([this](MapWriter &_map){
+		map_handle.write([&life](MapWriter &_map){
 			MapWriter &map = _map; // because qtcreator can't see _map
 			
 			/* Copy life to map */
@@ -131,69 +88,49 @@ public:
 
 	void genSoil(MapWriterHandle &map_handle)
 	{
-		map_handle.write([this](MapWriter &_map){
-			MapWriter &map = _map; // because qtcreator can't see _map
-			HexArray<RegionParams> params(Map::SIZE);
-			for(auto i = params.begin(); i != params.end(); ++i)
+		HexArray<LifeState> life(Map::SIZE);
+		
+		/* Generate life */
+		for(int i = 0; i < life_density_factor*Map::SIZE*Map::SIZE; ++i)
+		{
+			ivec2 p = random<(3*Map::SIZE)/4>();
+			life.get(p).alive = true;
+			life.get(p).track = true;
+		}
+		
+		/* Life step */
+		for(int j = 0; j < 16; ++j)
+		{
+			/* Copy previous state */
+			for(LifeState &ls : life)
 			{
-				(*i).pos = ~i;
+				ls.pre_alive = ls.alive;
+				ls.track = ls.track || ls.alive;
+				ls.alive = false;
 			}
-
-			/* Flood map */
-			for(Region *reg : map)
+			
+			/* Life step */
+			for(auto i = life.begin(); i != life.end(); ++i)
 			{
-				reg->type = Tile::OCEAN;
-			}
-
-			/* Drop seed */
-			int edge_num = 0;
-			map.getRegion(nullivec2)->type = Tile::SAND;
-			Map::Locator::getNeighbours(nullivec2,[&params,&map,&edge_num](const ivec2 &p){
-				if(map.getRegion(p)->type == Tile::OCEAN)
-				{
-					params.get(p).edge = true;
-					++edge_num;
-				}
-			});
-
-			/* Grow soil */
-			for(int i = 0; i < grow_factor*Map::SIZE*Map::SIZE; ++i)
-			{
-				/* Counting points */
-				int j = 0;
-				int r = rand.get()%edge_num;
-				for(RegionParams &p : params)
-				{
-					if(p.edge)
+				int count = 0;
+				Map::Locator::getNeighbours(~i,[&count,&life](const ivec2 &p){
+					if(life(p).pre_alive)
 					{
-						if(j == r)
-						{
-							map.getRegion(p.pos)->type = Tile::SAND;
-							p.edge = false;
-							--edge_num;
-							Map::Locator::getNeighbours(p.pos,[&params,&map,&edge_num](const ivec2 &p){
-								if(map.getRegion(p)->type == Tile::OCEAN)
-								{
-									params.get(p).edge = true;
-									++edge_num;
-								}
-							});
-							break;
-						}
-						++j;
+						++count;
 					}
-				}
-			}
-
-			/* Apply to tiles */
-			for(Region *reg : map)
-			{
-				for(Tile &til : *reg)
+				});
+				if(i->pre_alive)
 				{
-					til.type = reg->type;
+					i->alive = (count == 3);
+				}
+				else
+				{
+					i->alive = (count == 2);
 				}
 			}
-		});
+		}
+		
+		copyToMap(map_handle,life);
 	}
 
 	void genMoisture(MapWriterHandle &)

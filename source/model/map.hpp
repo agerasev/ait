@@ -57,7 +57,7 @@ public:
 class Map : public MapWriter
 {
 public:
-	static const int SIZE = 64;
+	static const int SIZE = 16;
 	static const int REG_SIZE = Region::SIZE;
 	typedef HexLocator<SIZE> Locator;
 
