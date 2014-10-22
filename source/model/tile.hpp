@@ -1,6 +1,8 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include"config.hpp"
+
 struct Tile
 {
 public:
@@ -8,20 +10,34 @@ public:
 	{
 		NONE = 0,
 		OCEAN,
-		SHELF,
+		FRESH,
 		SAND,
-		GRASS
+		GRASS,
+		ROCK,
+		MARSH,
+		SNOW
 	};
+	static const int TYPES_NUM = 8;
 
+	static bool isWater(Type t)
+	{
+		return t == OCEAN || t == FRESH;
+	}
+	
+	static bool isLand(Type t)
+	{
+		return !isWater(t) && t != NONE;
+	}
+	
 public:
 	Type type;
-	float height;
+	int height;
 
 public:
 	Tile()
 	{
 		type = NONE;
-		height = 0.0f;
+		height = 0;
 	}
 };
 

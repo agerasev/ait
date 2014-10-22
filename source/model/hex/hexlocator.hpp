@@ -7,6 +7,8 @@
 #include<4u/util/op.hpp>
 #include<4u/la/vec.hpp>
 
+#include<model/config.hpp>
+
 #define _floor floor
 
 static const vec2 __tile_vertex[6] = {
@@ -40,7 +42,7 @@ private:
 	HexLocator() {}
 
 public:
-	inline static ivec2 getTileByPos(const vec2 &p, double tile_size = 1.0)
+	inline static ivec2 getTileByPos(const vec2 &p, double tile_size = config::TILE_SIZE)
     {
 		int a = _floor(p.x()/(S32*tile_size));
 		int b = _floor((p.x()/S3 + p.y())/tile_size);
@@ -58,13 +60,13 @@ public:
     {
 		return ivec2(reg.x()*N - reg.y()*(N+1), reg.x()*(N+1) + reg.y()*(2*N+1));
     }
-	inline static vec2 getTileCenterPos(const ivec2 &pos, double tile_size = 1.0)
+	inline static vec2 getTileCenterPos(const ivec2 &pos, double tile_size = config::TILE_SIZE)
     {
 		return vec2(S3*tile_size*(pos.x() + 0.5*pos.y()),1.5*tile_size*pos.y());
     }
-	inline static const vec2 &getVertex(int n)
+	inline static vec2 getVertex(int n, double tile_size = config::TILE_SIZE)
 	{
-		return __tile_vertex[n];
+		return __tile_vertex[n]*tile_size;
 	}
 	inline static void getNeighbours(ivec2 p, std::function<void(const ivec2 &)> h)
 	{

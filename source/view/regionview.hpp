@@ -2,64 +2,60 @@
 #define REGIONVIEW_HPP
 
 #include<vector>
+#include<functional>
 
 #include<4u/gl/vertexbuffer.hpp>
+#include<4u/util/op.hpp>
 
 #include<model/hex/hexarray.hpp>
 #include<model/hex/hexlocator.hpp>
 #include<model/region.hpp>
 
-static const fvec3 __vertex_color = fvec3(1.0f,1.0f,1.0f);
-static const int __types_num = 5;
 static const fvec2 __vertex_texcoords[7] = {
-	fvec2(1.0,0.5/__types_num),
-	fvec2(0.5,0.99999/__types_num),
-	fvec2(0.0,0.99999/__types_num),
-	fvec2(0.0,0.5/__types_num),
-	fvec2(0.5,0.0/__types_num),
-	fvec2(1.0,0.0/__types_num),
-	fvec2(0.5,0.5/__types_num)
+	fvec2(1.0,0.5/Tile::TYPES_NUM),
+	fvec2(0.5,0.99999/Tile::TYPES_NUM),
+	fvec2(0.0,0.99999/Tile::TYPES_NUM),
+	fvec2(0.0,0.5/Tile::TYPES_NUM),
+	fvec2(0.5,0.0/Tile::TYPES_NUM),
+	fvec2(1.0,0.0/Tile::TYPES_NUM),
+	fvec2(0.5,0.5/Tile::TYPES_NUM)
 };
+
+template <typename T>
+fvec3 __getVertexColorMultiplier(const T &t)
+{
+	float mul = static_cast<float>(t.height)/config::gen::LAND_MAX_HEIGHT;
+	switch(t.type)
+	{
+	case Tile::GRASS:
+		return fvec3(1.0f,1.0f - 0.6f*mul, 0.0f);
+	case Tile::SNOW:
+		return fvec3(1.0f,1.0f,1.0f)*(1.0f - mul + static_cast<float>(config::gen::SNOW_THRESHOLD)/config::gen::LAND_MAX_HEIGHT);
+	case Tile::OCEAN:
+		return fvec3(1.0f,1.0f,1.0f)*(1.0f + mul);
+	case Tile::FRESH:
+		return fvec3(1.0f,1.0f,1.0f)*(0.8f + mul);
+	default:
+		return fvec3(1.0f,1.0f,1.0f);
+	}
+}
 
 class RegionView
 {
+public:
+	static const int BUFFER_SIZE = 18*(3*Region::SIZE*(Region::SIZE + 1) + 1);
+	
 private:
-	std::vector<fvec2> coord;
-	std::vector<fvec3> color;
-	std::vector<fvec2> texcoord;
-	VertexBuffer coord_buffer, color_buffer, texcoord_buffer;
-	int buffers_length = 0;
+	fvec3 *color;
+	fvec2 *texcoord;
+	VertexBuffer color_buffer, texcoord_buffer;
 	typedef Region::Locator Locator;
 
 public:
-	RegionView(const Region *reg)
+	RegionView(fvec3 *c, fvec2 *t) :
+		color(c), texcoord(t)
 	{
-		for(auto i = reg->begin(); i != reg->end(); ++i)
-		{
-			ivec2 p = ~i;
-			vec2 c = Locator::getTileCenterPos(p);
-			fvec2 tdev(0.0f,(float)i->type/__types_num);
-
-			for(int i = 0; i < 6; ++i)
-			{
-				coord.push_back(Locator::getVertex(i) + c);
-				coord.push_back(Locator::getVertex((i+1)%6) + c);
-				coord.push_back(c);
-
-				color.push_back(__vertex_color);
-				color.push_back(__vertex_color);
-				color.push_back(__vertex_color);
-
-				texcoord.push_back(__vertex_texcoords[i] + tdev);
-				texcoord.push_back(__vertex_texcoords[(i+1)%6] + tdev);
-				texcoord.push_back(__vertex_texcoords[6] + tdev);
-
-				buffers_length += 3;
-			}
-		}
-		coord_buffer.buffer(coord.data(),coord.size());
-		color_buffer.buffer(color.data(),color.size());
-		texcoord_buffer.buffer(texcoord.data(),texcoord.size());
+		
 	}
 	
 	void update(const Region *reg)
@@ -67,20 +63,23 @@ public:
 		int buffer_pos = 0;
 		for(auto i = reg->begin(); i != reg->end(); ++i)
 		{
-			fvec2 tdev(0.0f,(float)i->type/__types_num);
-			for(int i = 0; i < 6; ++i)
+			fvec2 tdev(0.0f,(float)i->type/Tile::TYPES_NUM);
+			for(int j = 0; j < 6; ++j)
 			{
-				texcoord[buffer_pos++] = __vertex_texcoords[i] + tdev;
-				texcoord[buffer_pos++] = __vertex_texcoords[(i+1)%6] + tdev;
-				texcoord[buffer_pos++] = __vertex_texcoords[6] + tdev;
+				fvec3 col = __getVertexColorMultiplier(*i);
+				color[buffer_pos] = col;
+				color[buffer_pos + 1] = col;
+				color[buffer_pos + 2] = col;
+				
+				texcoord[buffer_pos] = __vertex_texcoords[j] + tdev;
+				texcoord[buffer_pos + 1] = __vertex_texcoords[(j+1)%6] + tdev;
+				texcoord[buffer_pos + 2] = __vertex_texcoords[6] + tdev;
+				
+				buffer_pos += 3;
 			}
 		}
-		texcoord_buffer.buffer(texcoord.data(),texcoord.size());
-	}
-
-	VertexBuffer &getCoordBuffer()
-	{
-		return coord_buffer;
+		color_buffer.buffer(color, BUFFER_SIZE);
+		texcoord_buffer.buffer(texcoord, BUFFER_SIZE);
 	}
 	VertexBuffer &getColorBuffer()
 	{
@@ -89,10 +88,6 @@ public:
 	VertexBuffer &getTexCoordBuffer()
 	{
 		return texcoord_buffer;
-	}
-	int getBuffersLength() const
-	{
-		return buffers_length;
 	}
 };
 

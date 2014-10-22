@@ -8,7 +8,7 @@
 #include"spectator.hpp"
 #include"render.hpp"
 
-#include<model/generator/mapgenerator.hpp>
+#include<model/generator/generator.hpp>
 
 class Input : public Window::Listener
 {
@@ -16,14 +16,14 @@ private:
 	Render *render;
 	
 	/* Temporary */
-	MapGenerator *generator;
+	Generator *generator;
 	MapWriterHandle *map_handle;
 	
 	int pmx, pmy;
 	bool lmb = false, mmb = false, rmb = false;
 
 public:
-	Input(Render *ren, MapGenerator *gen, MapWriterHandle *mh) :
+	Input(Render *ren, Generator *gen, MapWriterHandle *mh) :
 		render(ren), generator(gen), map_handle(mh)
 	{
 
@@ -88,7 +88,7 @@ public:
 		int dx = mx - pmx, dy = my - pmy;
 		if(rmb)
 		{
-			spect.addPos(spect.getOri().invert()*((2.0/h)*vec2(dx,-dy)));
+			spect.addPos(-spect.getOri().invert()*((2.0/h)*vec2(dx,-dy)));
 		}
 		pmx = mx;
 		pmy = my;

@@ -8,21 +8,22 @@
 
 #include"tile.hpp"
 
+#include<model/config.hpp>
+
 class Region
 {
 public:
-	static const int SIZE = 0;
+	static const int SIZE = config::REGION_SIZE;
 	typedef HexLocator<SIZE> Locator;
 
-	Tile::Type type;
-	float height;
+	Tile::Type type = Tile::NONE;
+	int height = 0;
 
 private:
-	HexArray<Tile> tiles;
+	HexArray<Tile,SIZE> tiles;
 
 public:
-	Region() :
-		tiles(SIZE)
+	Region()
 	{
 
 	}
@@ -34,19 +35,19 @@ public:
 	{
 		return tiles(pos);
 	}
-	HexArray<Tile>::const_iterator begin() const
+	HexArray<Tile,SIZE>::const_iterator begin() const
 	{
 		return tiles.begin();
 	}
-	HexArray<Tile>::const_iterator end() const
+	HexArray<Tile,SIZE>::const_iterator end() const
 	{
 		return tiles.end();
 	}
-	HexArray<Tile>::iterator begin()
+	HexArray<Tile,SIZE>::iterator begin()
 	{
 		return tiles.begin();
 	}
-	HexArray<Tile>::iterator end()
+	HexArray<Tile,SIZE>::iterator end()
 	{
 		return tiles.end();
 	}

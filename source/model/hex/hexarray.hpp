@@ -6,33 +6,33 @@
  * maybe like this: "reinterpret_cast<T*>(new char[n*sizeof(T)])"
  */
 
+#include<functional>
+
 #include<4u/la/vec.hpp>
 
-template <class T>
+template <class T, int N>
 class HexArray
 {
 public:
 	class iterator
     {
     private:
-		HexArray<T> *_map;
+		HexArray<T,N> *_map;
         ivec2 _pos;
-        int _width;
         int _end_x;
         int _get_end_x(int f_y)
         {
-            return (f_y<0)?(_width):(_width - f_y);
+            return (f_y<0)?(N):(N - f_y);
         }
         int _get_begin_x(int f_y)
         {
-            return (f_y>0)?(-_width):(-_width - f_y);
+            return (f_y>0)?(-N):(-N - f_y);
         }
     public:
-		iterator(HexArray<T> *c_map, ivec2 c_pos):
+		iterator(HexArray<T,N> *c_map, ivec2 c_pos):
             _map(c_map),
             _pos(c_pos)
         {
-            _width = _map->width();
             _end_x = _get_end_x(_pos.y());
         }
 		~iterator()
@@ -85,24 +85,22 @@ public:
 	class const_iterator
 	{
 	private:
-		const HexArray<T> *_map;
+		const HexArray<T,N> *_map;
 		ivec2 _pos;
-		int _width;
 		int _end_x;
 		int _get_end_x(int f_y)
 		{
-			return (f_y<0)?(_width):(_width - f_y);
+			return (f_y<0)?(N):(N - f_y);
 		}
 		int _get_begin_x(int f_y)
 		{
-			return (f_y>0)?(-_width):(-_width - f_y);
+			return (f_y>0)?(-N):(-N - f_y);
 		}
 	public:
-		const_iterator(const HexArray<T> *c_map, ivec2 c_pos):
+		const_iterator(const HexArray<T,N> *c_map, ivec2 c_pos):
 			_map(c_map),
 			_pos(c_pos)
 		{
-			_width = _map->width();
 			_end_x = _get_end_x(_pos.y());
 		}
 		~const_iterator()
@@ -149,41 +147,39 @@ public:
 	};
 private:
     T **_elem;
-	int _width;
 public:
-	HexArray(int c_width):
-        _elem(nullptr),
-		_width(c_width)
+	HexArray():
+        _elem(nullptr)
     {
 		//std::cout << "HexArray created" << std::endl;
-		_elem = new T*[1+2*_width];
-		_elem += _width;
-		for(int i=-_width;i<0;i++){
-			_elem[i] = new T[2*_width+1+i];
-			_elem[i] += _width + i;
+		_elem = new T*[1+2*N];
+		_elem += N;
+		for(int i=-N;i<0;i++){
+			_elem[i] = new T[2*N+1+i];
+			_elem[i] += N + i;
         }
-        for(int i=0;i<=_width;i++){
-			_elem[i] = new T[2*_width+1-i];
-			_elem[i] += _width;
+        for(int i=0;i<=N;i++){
+			_elem[i] = new T[2*N+1-i];
+			_elem[i] += N;
 		}
 		//std::cout << "end." << std::endl;
     }
     ~HexArray()
 	{
-        for(int i=-_width;i<0;i++){
-		_elem[i] -= _width + i;
+        for(int i=-N;i<0;i++){
+		_elem[i] -= N + i;
         delete[] _elem[i];
         }
-        for(int i=0;i<=_width;i++){
-			_elem[i] -= _width;
+        for(int i=0;i<=N;i++){
+			_elem[i] -= N;
             delete[] _elem[i];
 		}
-		_elem -= _width;
+		_elem -= N;
 		delete[] _elem;\
     }
     bool inside(ivec2 p)
     {
-        if( p.x()>_width || -p.x()>_width || p.y()>_width || -p.y()>_width || p.x()+p.y()>_width || -p.x()-p.y()>_width )
+        if( p.x()>N || -p.x()>N || p.y()>N || -p.y()>N || p.x()+p.y()>N || -p.x()-p.y()>N )
         {
             return false;
         }
@@ -205,27 +201,40 @@ public:
     {
         return _elem[p.y()][p.x()];
     }
-    int width() const
+    int size() const
     {
-        return _width;
+        return N;
     }
     iterator begin()
     {
-		return iterator(this,ivec2(0,-_width));
+		return iterator(this,ivec2(0,-N));
     }
     iterator end()
     {
-		return iterator(this,ivec2(-_width,_width+1));
+		return iterator(this,ivec2(-N,N+1));
     }
 	const_iterator begin() const
 	{
-		return const_iterator(this,ivec2(0,-_width));
+		return const_iterator(this,ivec2(0,-N));
 	}
 	const_iterator end() const
 	{
-		return const_iterator(this,ivec2(-_width,_width+1));
+		return const_iterator(this,ivec2(-N,N+1));
+	}
+	void for_each(std::function<void(const T&, const ivec2 &p)> func) const
+	{
+		for(const_iterator i = begin(); i != end(); ++i)
+		{
+			func(*i,~i);
+		}
+	}
+	void for_each(std::function<void(T&, const ivec2 &p)> func)
+	{
+		for(iterator i = begin(); i != end(); ++i)
+		{
+			func(*i,~i);
+		}
 	}
 };
-
 
 #endif // HEXARRAY_HPP

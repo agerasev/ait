@@ -2,7 +2,6 @@
 #define SHADER_HPP
 
 #include<GL/glew.h>
-#include<iostream>
 #include<fstream>
 #include<string>
 
@@ -84,8 +83,8 @@ public:
 		if(st == GL_TRUE)
 		{
 			/* to log file */
-			std::cout << log;
-			std::cout.flush();
+			// std::cout << log;
+			// std::cout.flush();
 		}
 		else
 		{

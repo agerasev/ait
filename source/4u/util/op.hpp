@@ -27,6 +27,7 @@ inline int divmod(T &num, const T &den)
 	num = _mod(num,den);
     return ret;
 }
+#define _divmod divmod
 
 template <typename T>
 inline constexpr T _abs(const T &a)
@@ -52,6 +53,8 @@ inline constexpr int sgn(T arg)
 {
 	return static_cast<int>(static_cast<T>(0) < arg) - static_cast<int>(arg < static_cast<T>(0));
 }
+#define _sgn sgn
+
 /* clamping operation */
 template <typename T>
 inline float clamp(T x)
@@ -60,6 +63,7 @@ inline float clamp(T x)
 	return x < static_cast<T>(0) ? static_cast<T>(0) : (x > static_cast<T>(1) ? static_cast<T>(1) : x);
 
 }
+#define _clamp clamp
 
 template <typename T>
 inline T _pow(T arg, int exp)
@@ -84,5 +88,6 @@ inline constexpr T sqr(T arg)
 {
 	return arg*arg;
 }
+#define _sqr sqr
 
 #endif // OP_H

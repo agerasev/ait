@@ -104,15 +104,8 @@ public:
 		prog->setModelviewMatrix(spect.getOri());
 		prog->bindTexture(tex);
 		prog->enableAttribs();
-
-		for(auto i = map_view->begin(); i != map_view->end(); ++i)
-		{
-			prog->setTranslation(spect.getPos() + MapView::Locator::getTileCenterPos(MapView::Locator::getRegionCenterTile(~i)));
-			prog->pointCoord((*i)->getCoordBuffer());
-			prog->pointColor((*i)->getColorBuffer());
-			prog->pointTexCoord((*i)->getTexCoordBuffer());
-			glDrawArrays(GL_TRIANGLES,0,(*i)->getBuffersLength());
-		}
+		
+		map_view->draw(prog,spect,projection_matrix);
 
 		prog->disableAttribs();
 		prog->disable();

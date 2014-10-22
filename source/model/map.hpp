@@ -10,6 +10,9 @@
 #include<model/hex/hexlocator.hpp>
 
 #include<model/region.hpp>
+
+#include<model/config.hpp>
+
 class Map;
 
 class MapReader;
@@ -23,18 +26,18 @@ public:
 	virtual void read(std::function<void(MapReader&)>) = 0;
 };
 
-class MapWriterHandle
+class MapWriterHandle : public virtual MapReaderHandle
 {
 public:
 	virtual void write(std::function<void(MapWriter&)>) = 0;
 };
 
-class MapReader : public MapReaderHandle
+class MapReader : public virtual MapReaderHandle
 {
 public:
 	/* Iteration */
-	virtual HexArray<Region*>::const_iterator begin() const = 0;
-	virtual HexArray<Region*>::const_iterator end() const = 0;
+	virtual HexArray<Region*,config::MAP_SIZE>::const_iterator begin() const = 0;
+	virtual HexArray<Region*,config::MAP_SIZE>::const_iterator end() const = 0;
 	/* Direct access */
 	virtual const Region *getRegion(const ivec2 &rpos) const = 0;
 	virtual const Tile &getTile(const ivec2 &pos) const = 0;
@@ -42,12 +45,12 @@ public:
 	virtual unsigned int getHash() const = 0;
 };
 
-class MapWriter : public MapReader, public MapWriterHandle
+class MapWriter : public virtual MapReader, public virtual MapWriterHandle
 {
 public:
 	/* Iteration */
-	virtual HexArray<Region*>::iterator begin() = 0;
-	virtual HexArray<Region*>::iterator end() = 0;
+	virtual HexArray<Region*,config::MAP_SIZE>::iterator begin() = 0;
+	virtual HexArray<Region*,config::MAP_SIZE>::iterator end() = 0;
 	/* Direct access */
 	virtual Region *getRegion(const ivec2 &rpos) = 0;
 	virtual Tile &getTile(const ivec2 &pos) = 0;
@@ -57,18 +60,17 @@ public:
 class Map : public MapWriter
 {
 public:
-	static const int SIZE = 16;
+	static const int SIZE = config::MAP_SIZE;
 	static const int REG_SIZE = Region::SIZE;
 	typedef HexLocator<SIZE> Locator;
 
 private:
-	HexArray<Region*> regions;
+	HexArray<Region*,SIZE> regions;
 	Mutex mutex; /* TODO: Replce Mutex with RWCond */
 	unsigned int hash = 0;
 
 public:
-	Map() :
-		regions(SIZE)
+	Map()
 	{
 		for(Region *&reg : regions)
 		{
@@ -106,11 +108,11 @@ public:
 	}
 
 	/* MapReader */
-	virtual HexArray<Region*>::const_iterator begin() const override
+	virtual HexArray<Region*,SIZE>::const_iterator begin() const override
 	{
 		return regions.begin();
 	}
-	virtual HexArray<Region*>::const_iterator end() const override
+	virtual HexArray<Region*,SIZE>::const_iterator end() const override
 	{
 		return regions.end();
 	}
@@ -130,11 +132,11 @@ public:
 	}
 
 	/* MapWriter */
-	virtual HexArray<Region*>::iterator begin() override
+	virtual HexArray<Region*,SIZE>::iterator begin() override
 	{
 		return regions.begin();
 	}
-	virtual HexArray<Region*>::iterator end() override
+	virtual HexArray<Region*,SIZE>::iterator end() override
 	{
 		return regions.end();
 	}

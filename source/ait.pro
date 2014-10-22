@@ -66,7 +66,10 @@ HEADERS += \
 	view/mapview.hpp \
     view/regionview.hpp \
     view/input.hpp \
-    model/generator/mapgenerator.hpp
+    model/generator/generator.hpp \
+    model/generator/landscape.hpp \
+    model/config.hpp \
+    view/config.hpp
 
 OTHER_FILES += \
     ../shader/fragment.frag \

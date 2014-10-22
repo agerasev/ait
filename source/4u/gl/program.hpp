@@ -2,7 +2,7 @@
 #define PROGRAM_HPP
 
 #include"shader.hpp"
-#include<iostream>
+// #include<iostream>
 #include<4u/exception/glexception.hpp>
 
 class Program
@@ -19,18 +19,18 @@ private:
 		return true;
 	}
 
-	void logAttribute(GLint attrib, const GLchar *name)
+	void logAttribute(GLint attrib, const GLchar */*name*/)
 	{
 		if(attrib == -1)
 		{
-			std::cout << "Could not bind attribute " << name << std::endl;
+			// std::cout << "Could not bind attribute " << name << std::endl;
 		}
 	}
-	void logUniform(GLint unif, const GLchar *name)
+	void logUniform(GLint unif, const GLchar */*name*/)
 	{
 		if(unif == -1)
 		{
-			std::cout << "Could not bind uniform " << name << std::endl;
+			// std::cout << "Could not bind uniform " << name << std::endl;
 		}
 	}
 
@@ -57,7 +57,7 @@ public:
 		glLinkProgram(id);
 		if(logLinking())
 		{
-			std::cout << "Shaders were successfully attached." << std::endl;
+			// std::cout << "Shaders were successfully attached." << std::endl;
 		}
 		else
 		{
