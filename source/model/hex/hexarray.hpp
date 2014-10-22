@@ -177,14 +177,6 @@ public:
 		_elem -= N;
 		delete[] _elem;\
     }
-    bool inside(ivec2 p)
-    {
-        if( p.x()>N || -p.x()>N || p.y()>N || -p.y()>N || p.x()+p.y()>N || -p.x()-p.y()>N )
-        {
-            return false;
-        }
-        return true;
-    }
     T &get(ivec2 p)
     {
         return _elem[p.y()][p.x()];

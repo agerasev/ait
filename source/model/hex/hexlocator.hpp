@@ -51,9 +51,9 @@ public:
     }
 	inline static ivec2 getRegionByTile(const ivec2 &p)
     {
-        int A = _div(AX*p.x() + AY*p.y(), N - (3*N + 1)*(N + 1));
-        int B = _div(BX*p.x() + BY*p.y(), -(3*N + 2)*(N + 1) + (2*N + 1));
-        int C = _div(CX*p.x() + CY*p.y(), -(3*N + 1)*(N + 1) + (3*N + 2)*(2*N + 1));
+        int A = _div(AX*p.x() + AY*p.y(), AD);
+        int B = _div(BX*p.x() + BY*p.y(), BD);
+        int C = _div(CX*p.x() + CY*p.y(), CD);
         return ivec2(_div(C-B+1,3),_div(A+B+2,3));
     }
 	inline static ivec2 getRegionCenterTile(const ivec2 &reg)
@@ -85,6 +85,10 @@ public:
 			}
 		}
 	}
+	inline static bool isInside(const ivec2 &p)
+    {
+        return _abs(p.x()) <= N && _abs(p.y()) <= N && _abs(p.x() + p.y()) <= N;
+    }
 };
 
 #endif // HEXLOCATOR_HPP

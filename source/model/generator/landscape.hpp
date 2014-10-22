@@ -8,6 +8,8 @@
 
 #include<queue>
 
+#include<cmath>
+
 class Landscape
 {
 private:
@@ -263,34 +265,57 @@ public:
 	
 	void applyToTiles(MapWriterHandle &map_handle)
 	{
+		typedef HexLocator<config::gen::BLUR_RADIUS> Brush;
+		HexArray<double,config::gen::BLUR_RADIUS> brush;
+		double norm = 0.0;
+		brush.for_each([&](double &weight, const ivec2 &dp)
+		{
+			norm += (weight = exp(config::gen::BLUR_FACTOR*_sqr(Region::Locator::getTileCenterPos(dp))));
+		});
+		brush.for_each([&](double &weight, const ivec2 &)
+		{
+			weight /= norm;
+		});
 		map_handle.write([&](MapWriter &_map)
 		{
 			MapWriter &map = _map; // because qtcreator can't see _map
 			for(auto i = map.begin(); i != map.end(); ++i)
 			{
-				// ivec2 r = ~i;
+				ivec2 r = ~i;
 				for(auto j = (*i)->begin(); j != (*i)->end(); ++j)
 				{
-					j->type = (*i)->type;
-					j->height = (*i)->height;
-					
-					/*
-					ivec2 t = ~j;
-					ivec2 rt = Region::Locator::getRegionCenterTile(r);
-					if(t == rt)
+					ivec2 t = ~j + Region::Locator::getRegionCenterTile(r);
+					double rating[Tile::TYPES_NUM] = {0};
+					double height = 0;
+					Tile &dst = *j;
+					brush.for_each([&](double &weight, const ivec2 &dp)
 					{
-						j->type = (*i)->type;
-						j->height = (*i)->height;
-					}
-					else
-					{
-						Map::Locator::getNeighbours(r,[&](const ivec2 &nr)
+						ivec2 np = dp + t;
+						ivec2 nr = Region::Locator::getRegionByTile(np);
+						Region *src = nullptr;
+						if(Map::Locator::isInside(nr))
 						{
-							ivec2 nrt = Region::Locator::getRegionCenterTile(r);
-							vec2 rp = Region::Locator::getTileCenterPos(pos)
-						});
+							src = map.getRegion(nr);
+						}
+						else
+						{
+							src = *i;
+						}
+						rating[src->type] += weight;
+						height += weight*src->height;
+					});
+					dst.height = height;
+					Tile::Type type = Tile::NONE;
+					double max_type_weight = 0.0;
+					for(int i = 0; i < Tile::TYPES_NUM; ++i)
+					{
+						if(rating[i] > max_type_weight)
+						{
+							max_type_weight = rating[i];
+							type = static_cast<Tile::Type>(i);
+						}
 					}
-					*/
+					dst.type = type;
 				}
 			}
 		});

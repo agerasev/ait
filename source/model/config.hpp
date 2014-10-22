@@ -27,6 +27,11 @@ const int
   GRASS_THRESHOLD = 2,
   SNOW_THRESHOLD = 75;
 
+const int 
+  BLUR_RADIUS = REGION_SIZE;
+const double 
+  BLUR_FACTOR = -0.01;
+
 }
 
 }
