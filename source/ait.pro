@@ -74,4 +74,5 @@ HEADERS += \
 OTHER_FILES += \
     ../shader/fragment.frag \
     ../shader/vertex.vert \
-    TODO.md
+    TODO.md \
+    ../shader/fragment_hex.frag

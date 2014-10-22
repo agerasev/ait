@@ -55,12 +55,13 @@ public:
 		
 		map_handle.read([this](MapReader &map){
 			mini_init(map);
+			// tex_init();
+			// tex_update(map);
 			for(auto i = map.begin(); i != map.end(); ++i)
 			{
 				regions.get(~i) = new RegionView(color,texcoord);
-				regions.get(~i)->update(*i);
+				// regions.get(~i)->update(*i);
 			}
-			hash = map.getHash();
 		});
 	}
 	~MapView()
@@ -73,12 +74,16 @@ public:
 		delete[] coord;
 		delete[] color;
 		delete[] texcoord;
+		
+		mini_delete();
+		// tex_delete();
 	}
 
 	void update()
 	{
 		map_handle.read([this](MapReader &map){
 			mini_update(map);
+			// tex_update(map);
 			if(hash != map.getHash())
 			{
 				for(auto i = map.begin(); i != map.end(); ++i)
@@ -113,6 +118,7 @@ public:
 		else
 		{
 			/* Draw miniature */
+			// glBindTexture(GL_TEXTURE_2D, texture);
 			prog->setTranslation(spect.getPos());
 			prog->pointCoord(mini_coord_buffer);
 			prog->pointColor(mini_color_buffer);
@@ -208,6 +214,55 @@ private:
 		delete[] mini_color;
 		delete[] mini_texcoord;
 	}
+
+	/*
+private:
+	GLuint texture;
+	fvec3 *tex_bitmap;
+	
+	static const int TEX_REG_SIZE = 2*Region::SIZE + 1;
+	static const int TEX_MAP_SIZE = 2*Map::SIZE + 1;
+	
+	void tex_init()
+	{
+		tex_bitmap = new fvec3[_sqr(TEX_REG_SIZE*TEX_MAP_SIZE)];
+		glGenTextures(1,&texture);
+	}
+	
+	void tex_update(MapReader &map)
+	{
+		int pitch = TEX_REG_SIZE*TEX_MAP_SIZE;
+		for(auto i = map.begin(); i != map.end(); ++i)
+		{
+			const Region *reg = *i;
+			ivec2 bm_map_coord = ~i + ivec2(Map::SIZE,Map::SIZE);
+			for(auto j = reg->begin(); j != reg->end(); ++j)
+			{
+				ivec2 bm_reg_coord = ~j + ivec2(Region::SIZE,Region::SIZE);
+				tex_bitmap[
+				  (bm_map_coord.y()*TEX_MAP_SIZE + bm_map_coord.x())*TEX_REG_SIZE + 
+				  (bm_reg_coord.y()*pitch + bm_reg_coord.x())
+				] = __getVertexColorMultiplier(**i);
+			}
+		}
+
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TEX_REG_SIZE*TEX_MAP_SIZE, TEX_REG_SIZE*TEX_MAP_SIZE, 0, GL_RGB, GL_FLOAT, tex_bitmap);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	void tex_delete()
+	{
+		glDeleteTextures(1,&texture);
+	}
+	*/
 };
 
 #endif // MAPVIEW_HPP

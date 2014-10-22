@@ -5,6 +5,7 @@
 #include<functional>
 
 #include<4u/gl/vertexbuffer.hpp>
+#include<4u/gl/texture.hpp>
 #include<4u/util/op.hpp>
 
 #include<model/hex/hexarray.hpp>
@@ -28,7 +29,7 @@ fvec3 __getVertexColorMultiplier(const T &t)
 	switch(t.type)
 	{
 	case Tile::GRASS:
-		return fvec3(1.0f,1.0f - 0.6f*mul, 0.0f);
+		return fvec3(1.0f,1.0f - 1.0f*mul, 0.0f);
 	case Tile::SNOW:
 		return fvec3(1.0f,1.0f,1.0f)*(1.0f - mul + static_cast<float>(config::gen::SNOW_THRESHOLD)/config::gen::LAND_MAX_HEIGHT);
 	case Tile::OCEAN:
@@ -49,6 +50,7 @@ private:
 	fvec3 *color;
 	fvec2 *texcoord;
 	VertexBuffer color_buffer, texcoord_buffer;
+	
 	typedef Region::Locator Locator;
 
 public:
@@ -58,8 +60,14 @@ public:
 		
 	}
 	
+	~RegionView()
+	{
+		
+	}
+	
 	void update(const Region *reg)
 	{
+		/* Loads buffers in video memory */
 		int buffer_pos = 0;
 		for(auto i = reg->begin(); i != reg->end(); ++i)
 		{
@@ -81,6 +89,7 @@ public:
 		color_buffer.buffer(color, BUFFER_SIZE);
 		texcoord_buffer.buffer(texcoord, BUFFER_SIZE);
 	}
+
 	VertexBuffer &getColorBuffer()
 	{
 		return color_buffer;

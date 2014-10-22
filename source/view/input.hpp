@@ -88,7 +88,7 @@ public:
 		int dx = mx - pmx, dy = my - pmy;
 		if(rmb)
 		{
-			spect.addPos(-spect.getOri().invert()*((2.0/h)*vec2(dx,-dy)));
+			spect.addPos(spect.getOri().invert()*((2.0/h)*vec2(dx,-dy)));
 		}
 		pmx = mx;
 		pmy = my;
