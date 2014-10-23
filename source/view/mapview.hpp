@@ -82,10 +82,10 @@ public:
 	void update()
 	{
 		map_handle.read([this](MapReader &map){
-			mini_update(map);
-			// tex_update(map);
 			if(hash != map.getHash())
 			{
+				mini_update(map);
+				// tex_update(map);
 				for(auto i = map.begin(); i != map.end(); ++i)
 				{
 					regions.get(~i)->update(*i);
@@ -191,6 +191,8 @@ private:
 		for(auto i = map.begin(); i != map.end(); ++i)
 		{
 			fvec2 tdev(0.0f,(float)(*i)->type/Tile::TYPES_NUM);
+			int r = __rand.get()%6;
+			fvec2 n = 0.5f*fvec2(__rand.get()%2,(float)(__rand.get()%2)/Tile::TYPES_NUM);
 			for(int j = 0; j < 6; ++j)
 			{
 				fvec3 col = __getVertexColorMultiplier(**i);
@@ -198,9 +200,9 @@ private:
 				mini_color[buffer_pos + 1] = col;
 				mini_color[buffer_pos + 2] = col;
 				
-				mini_texcoord[buffer_pos] = __vertex_texcoords[j] + tdev;
-				mini_texcoord[buffer_pos + 1] = __vertex_texcoords[(j+1)%6] + tdev;
-				mini_texcoord[buffer_pos + 2] = __vertex_texcoords[6] + tdev;
+				mini_texcoord[buffer_pos] = __vertex_texcoords[(j+r)%6]/2 + n + tdev;
+				mini_texcoord[buffer_pos + 1] = __vertex_texcoords[(j+1+r)%6]/2 + n + tdev;
+				mini_texcoord[buffer_pos + 2] = __vertex_texcoords[6]/2 + n + tdev;
 				
 				buffer_pos += 3;
 			}

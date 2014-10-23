@@ -4,7 +4,7 @@
 namespace vconfig
 {
 
-const int MINIATURE_THRESHOLD = 64;
+const int MINIATURE_THRESHOLD = 128;
 
 }
 

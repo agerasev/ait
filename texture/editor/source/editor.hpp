@@ -37,6 +37,25 @@ public:
 		filename = name;
 		bitmap = SDL_CreateRGBSurface(SDL_SWSURFACE,w,h,24,0xff0000,0x00ff00,0x0000ff,0x000000);
     }
+	
+	void transform(const char *src, const char *dst, int w, int h)
+	{
+		filename = dst;
+		bitmap = SDL_CreateRGBSurface(SDL_SWSURFACE,w,h,24,0xff0000,0x00ff00,0x0000ff,0x000000);
+		SDL_Surface *source = SDL_LoadBMP(src);
+		for(int iy = 0; iy < h; ++iy)
+		{
+			for(int ix = 0; ix < w; ++ix)
+			{
+				Uint8 *dptr = (Uint8*)bitmap->pixels + iy*bitmap->pitch + 3*ix;
+				float sy = (float)iy/h*source->h, sx = (float)(ix + iy)/(w + h)*source->w;
+				Uint8 *sptr = (Uint8*)source->pixels + (int)sy*source->pitch + 3*(int)sx;
+				dptr[0] = sptr[2];
+				dptr[1] = sptr[1];
+				dptr[2] = sptr[0];
+			}
+		}
+	}
 
     void save() {
 		SDL_SaveBMP(bitmap,filename);

@@ -6,8 +6,8 @@ namespace config
 
 /* Size */
 const int 
-  MAP_SIZE = 12,
-  REGION_SIZE = 12;
+  MAP_SIZE = 24,
+  REGION_SIZE = 8;
 const double
   TILE_SIZE = 0.6f;
 
@@ -28,7 +28,7 @@ const int
   SNOW_THRESHOLD = 75;
 
 const int 
-  BLUR_RADIUS = REGION_SIZE;
+  BLUR_RADIUS = REGION_SIZE/2;
 const double 
   BLUR_FACTOR = -0.01;
 

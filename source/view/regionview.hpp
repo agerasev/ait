@@ -7,6 +7,7 @@
 #include<4u/gl/vertexbuffer.hpp>
 #include<4u/gl/texture.hpp>
 #include<4u/util/op.hpp>
+#include<4u/random/contrand.hpp>
 
 #include<model/hex/hexarray.hpp>
 #include<model/hex/hexlocator.hpp>
@@ -29,17 +30,19 @@ fvec3 __getVertexColorMultiplier(const T &t)
 	switch(t.type)
 	{
 	case Tile::GRASS:
-		return fvec3(1.0f,1.0f - 1.0f*mul, 0.0f);
+		return fvec3(1.0f,1.2f - 0.6f*mul,1.0f);
 	case Tile::SNOW:
 		return fvec3(1.0f,1.0f,1.0f)*(1.0f - mul + static_cast<float>(config::gen::SNOW_THRESHOLD)/config::gen::LAND_MAX_HEIGHT);
 	case Tile::OCEAN:
 		return fvec3(1.0f,1.0f,1.0f)*(1.0f + mul);
-	case Tile::FRESH:
-		return fvec3(1.0f,1.0f,1.0f)*(0.8f + mul);
+	// case Tile::FRESH:
+		// return fvec3(1.0f,1.0f,1.0f)*(0.8f + mul);
 	default:
 		return fvec3(1.0f,1.0f,1.0f);
 	}
 }
+
+static ContRandInt __rand(0xabcdef);
 
 class RegionView
 {
@@ -72,6 +75,8 @@ public:
 		for(auto i = reg->begin(); i != reg->end(); ++i)
 		{
 			fvec2 tdev(0.0f,(float)i->type/Tile::TYPES_NUM);
+			int r = __rand.get()%6;
+			fvec2 n = 0.5f*fvec2(__rand.get()%2,(float)(__rand.get()%2)/Tile::TYPES_NUM);
 			for(int j = 0; j < 6; ++j)
 			{
 				fvec3 col = __getVertexColorMultiplier(*i);
@@ -79,9 +84,9 @@ public:
 				color[buffer_pos + 1] = col;
 				color[buffer_pos + 2] = col;
 				
-				texcoord[buffer_pos] = __vertex_texcoords[j] + tdev;
-				texcoord[buffer_pos + 1] = __vertex_texcoords[(j+1)%6] + tdev;
-				texcoord[buffer_pos + 2] = __vertex_texcoords[6] + tdev;
+				texcoord[buffer_pos] = __vertex_texcoords[(j+r)%6]/2 + n + tdev;
+				texcoord[buffer_pos + 1] = __vertex_texcoords[(j+1+r)%6]/2 + n + tdev;
+				texcoord[buffer_pos + 2] = __vertex_texcoords[6]/2 + n + tdev;
 				
 				buffer_pos += 3;
 			}
