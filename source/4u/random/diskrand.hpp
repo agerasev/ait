@@ -2,7 +2,7 @@
 #define DISKRAND_H
 
 #include<4u/la/vec.hpp>
-#include<4u/rand/contrand.hpp>
+#include"contrand.hpp"
 #include<4u/util/const.hpp>
 
 #include<math.h>

@@ -2,13 +2,15 @@
 
 #include<SDL2/SDL.h>
 
-#include<4u/window/glwindow.hpp>
+#include"4u/window/glwindow.hpp"
 #include"view/render.hpp"
 #include"view/input.hpp"
 
 #include"model/map.hpp"
 #include"model/generator/generator.hpp"
 #include"view/mapview.hpp"
+
+#include"model/config.hpp"
 
 int main(int, char *[]) {
 

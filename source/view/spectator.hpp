@@ -1,6 +1,8 @@
 #ifndef SPECTATOR_H
 #define SPECTATOR_H
 
+#include"config.hpp"
+
 #include<4u/la/vec.hpp>
 #include<4u/la/mat.hpp>
 
@@ -8,7 +10,7 @@ class Spectator
 {
 private:
 	vec2 pos = nullvec2;
-	mat2 ori = mat2{1e-2,0,0,1e-2};
+	mat2 ori = mat2{1.0/vconfig::MAX_ZOOM,0,0,1.0/vconfig::MAX_ZOOM};
 public:
 	void setPos(const vec2 &p)
 	{

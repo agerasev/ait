@@ -2,12 +2,12 @@
 #define ENTITYVIEW_HPP
 
 #include<model/hex/hexlocator.hpp>
-#include"textures.hpp"
+#include<view/textures.hpp>
 
 class EntityView
 {
 private:
-	void draw() const
+    void draw()
 	{
 		
 	}

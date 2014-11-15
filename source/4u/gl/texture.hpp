@@ -26,6 +26,20 @@ public:
 
 	void loadFromFile(const char *addr) throw(FileNotFoundException)
 	{
+		SDL_Surface *face = SDL_LoadBMP(addr);
+		if(face != nullptr)
+		{
+			load(face);
+			SDL_FreeSurface(face);
+		}
+		else
+		{
+			throw FileNotFoundException(addr);
+		}
+	}
+	
+	void load(SDL_Surface *face)
+	{
 		bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -33,16 +47,7 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		SDL_Surface *face = SDL_LoadBMP(addr);
-		if(face != nullptr)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, face->w, face->h, 0, GL_RGB, GL_UNSIGNED_BYTE, face->pixels);
-			SDL_FreeSurface(face);
-		}
-		else
-		{
-			throw FileNotFoundException(addr);
-		}
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, face->w, face->h, 0, GL_RGB, GL_UNSIGNED_BYTE, face->pixels);
 
 		unbind();
 	}

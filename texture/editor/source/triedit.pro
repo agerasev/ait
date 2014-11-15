@@ -4,16 +4,16 @@ CONFIG -= qt
 
 QMAKE_CXXFLAGS += -std=c++11
 
-LIBS += -lSDL2 -lSDL2main -lGL -lGLEW -lSDL_image
+LIBS += -lSDL2 -lSDL_image -lGL -lGLEW -lpng
 
 SOURCES += \
     main.cpp \
     window.cpp \
-    glwindow.cpp \
-    editor.cpp
+    glwindow.cpp
 
 HEADERS += \
     api.hpp \
     editor.hpp \
     glwindow.hpp \
-    window.hpp
+    window.hpp \
+    png.hpp

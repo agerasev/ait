@@ -40,6 +40,78 @@ private:
 
 private:
 	HexLocator() {}
+	
+public:
+	class iterator
+    {
+    private:
+        ivec2 _pos;
+        int _end_x;
+        inline int _get_end_x(int f_y)
+        {
+            return N - f_y*(f_y>=0);
+        }
+        inline int _get_begin_x(int f_y)
+        {
+            return -N - f_y*(f_y<=0);
+        }
+    public:
+		inline iterator(ivec2 c_pos) :
+            _pos(c_pos)
+        {
+            _end_x = _get_end_x(_pos.y());
+        }
+		inline void next()
+        {
+            ++_pos.x();
+            if(_pos.x() > _end_x)
+            {
+                ++_pos.y();
+                _pos.x() = _get_begin_x(_pos.y());
+                _end_x = _get_end_x(_pos.y());
+            }
+        }
+		inline iterator &operator ++ ()
+        {
+            next();
+            return (*this);
+        }
+		inline ivec2 pos() const
+        {
+            return _pos;
+        }
+        inline ivec2 operator ~() const
+        {
+            return pos();
+        }
+		inline bool isEquals(const iterator &f_iter) const
+		{
+			return f_iter.pos() == _pos;
+		}
+		inline bool operator == (const iterator &f_iter)
+        {
+            return isEquals(f_iter);
+        }
+		inline bool operator != (const iterator &f_iter)
+        {
+            return !isEquals(f_iter);
+        }
+	};
+	static iterator begin()
+    {
+		return iterator(ivec2(0,-N));
+    }
+    static iterator end()
+    {
+		return iterator(ivec2(-N,N+1));
+    }
+	static void for_each(std::function<void(const ivec2 &p)> func)
+	{
+		for(iterator i = begin(); i != end(); ++i)
+		{
+			func(~i);
+		}
+	}
 
 public:
 	inline static ivec2 getTileByPos(const vec2 &p, double tile_size = config::TILE_SIZE)

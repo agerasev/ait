@@ -5,6 +5,7 @@
 #include<4u/util/op.hpp>
 
 #include<model/map.hpp>
+#include"config.hpp"
 
 #include<queue>
 
@@ -17,7 +18,7 @@ private:
 	ContRandInt rand;
 	
 	/* Life */
-	const float life_density_factor = config::gen::LAND_FREQUENCY;
+    const float life_density_factor = gconfig::LAND_FREQUENCY;
 	struct LifeState
 	{
 	public:
@@ -53,13 +54,13 @@ public:
 		/* Generate life */
 		for(int i = 0; i < life_density_factor*Map::SIZE*Map::SIZE; ++i)
 		{
-			ivec2 p = random<static_cast<int>(config::gen::LAND_RADIUS*Map::SIZE)>();
+            ivec2 p = random<static_cast<int>(gconfig::LAND_RADIUS*Map::SIZE)>();
 			life.get(p).alive = true;
 			life.get(p).track = true;
 		}
 		
 		/* Life step */
-		for(int j = 0; j < config::gen::GAME_OF_LIFE_ITERS; ++j)
+        for(int j = 0; j < gconfig::GAME_OF_LIFE_ITERS; ++j)
 		{
 			/* Copy previous state */
 			for(LifeState &ls : life)
@@ -234,19 +235,19 @@ public:
 			dist.for_each([&](DistanceState &ds, const ivec2 &p)
 			{
 				Region *reg = map.getRegion(p);
-				reg->height = ds.dist/(Map::SIZE*config::gen::LAND_RADIUS/2)*config::gen::LAND_MAX_HEIGHT;
+                reg->height = ds.dist/(Map::SIZE*gconfig::LAND_RADIUS/2)*gconfig::LAND_MAX_HEIGHT;
 				if(reg->type == Tile::OCEAN && !ds.open)
 				{
 					reg->type = Tile::FRESH;
 				}
 				if(Tile::isLand(reg->type))
 				{
-					if(ds.dist >= config::gen::GRASS_THRESHOLD)
+                    if(ds.dist >= gconfig::GRASS_THRESHOLD)
 					{
 						reg->type = Tile::GRASS;
 					}
 					/*
-					if(reg->height >= config::gen::SNOW_THRESHOLD)
+                    if(reg->height >= gconfig::SNOW_THRESHOLD)
 					{
 						reg->type = Tile::SNOW;
 					}
@@ -254,9 +255,9 @@ public:
 				}
 				else if(Tile::isWater(reg->type))
 				{
-					if(reg->height < config::gen::OCEAN_DEPTH)
+                    if(reg->height < gconfig::OCEAN_DEPTH)
 					{
-						reg->height = config::gen::OCEAN_DEPTH;
+                        reg->height = gconfig::OCEAN_DEPTH;
 					}
 				}
 			});
@@ -265,12 +266,12 @@ public:
 	
 	void applyToTiles(MapWriterHandle &map_handle)
 	{
-		typedef HexLocator<config::gen::BLUR_RADIUS> Brush;
-		HexArray<double,config::gen::BLUR_RADIUS> brush;
+        typedef HexLocator<gconfig::BLUR_RADIUS> Brush;
+        HexArray<double,gconfig::BLUR_RADIUS> brush;
 		double norm = 0.0;
 		brush.for_each([&](double &weight, const ivec2 &dp)
 		{
-			norm += (weight = exp(config::gen::BLUR_FACTOR*_sqr(Region::Locator::getTileCenterPos(dp))));
+            norm += (weight = exp(gconfig::BLUR_FACTOR*_sqr(Region::Locator::getTileCenterPos(dp))));
 		});
 		brush.for_each([&](double &weight, const ivec2 &)
 		{

@@ -12,7 +12,6 @@
 
 #include<4u/gl/vertexshader.hpp>
 #include<4u/gl/fragmentshader.hpp>
-#include<4u/gl/texture.hpp>
 
 #include<4u/gl/vertexbuffer.hpp>
 
@@ -20,7 +19,7 @@
 
 #include"renderprogram.hpp"
 
-#include<model/hex/hexlocator.hpp>
+#include"textures.hpp"
 
 #include"mapview.hpp"
 #include"spectator.hpp"
@@ -30,7 +29,6 @@ class Render : public Window::Render
 private:
 	Shader *vs, *fs;
 	RenderProgram *prog;
-	Texture *tex;
 
 	fmat2 projection_matrix = unifmat2;
 
@@ -52,19 +50,6 @@ public:
 		fs = new FragmentShader();
 		prog = new RenderProgram();
 
-		tex = new Texture();
-
-		try
-		{
-			tex->loadFromFile("../texture/terrian.bmp");
-		}
-		catch (const Exception &e)
-		{
-			std::cerr << e.getMessage() << std::endl;
-			return;
-		}
-
-
 		try
 		{
 			vs->loadSourceFromFile("../shader/vertex.vert");
@@ -82,6 +67,8 @@ public:
 			std::cerr << e.getMessage() << std::endl;
 			return;
 		}
+		
+		textures.load();
 
 		glClearColor(0,0,0,1);
 	}
@@ -99,10 +86,7 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		prog->enable();
-		prog->setTranslation(spect.getPos());
 		prog->setProjectionMatrix(projection_matrix);
-		prog->setModelviewMatrix(spect.getOri());
-		prog->bindTexture(tex);
 		prog->enableAttribs();
 		
 		map_view->draw(prog,spect,projection_matrix);
@@ -113,8 +97,8 @@ public:
 
 	virtual void dispose()
 	{
-		delete tex;
-
+		textures.free();
+		
 		prog->detach(vs);
 		prog->detach(fs);
 		delete prog;

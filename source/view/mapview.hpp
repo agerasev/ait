@@ -5,7 +5,9 @@
 
 #include<model/map.hpp>
 
+#include<4u/util/const.hpp>
 #include<4u/gl/vertexbuffer.hpp>
+#include<4u/gl/texture.hpp>
 
 #include"renderprogram.hpp"
 #include"regionview.hpp"
@@ -25,7 +27,9 @@ private:
 	fvec3 *color = nullptr;
 	fvec2 *texcoord = nullptr;
 	VertexBuffer coord_buffer;
-
+	
+	Texture tex;
+	
 public:
 	typedef Region::Locator Locator;
 	MapView(MapReaderHandle &mh) :
@@ -34,6 +38,9 @@ public:
 		color(new fvec3[RegionView::BUFFER_SIZE]),
 		texcoord(new fvec2[RegionView::BUFFER_SIZE])
 	{
+		/* Load textures */
+		tex.loadFromFile("../texture/terrian.bmp");
+		
 		/* Creates coord buffer */
 		Region temp;
 		int buffer_pos = 0;
@@ -97,6 +104,9 @@ public:
 	
 	void draw(RenderProgram *prog, const Spectator &spect, const mat2 &proj)
 	{
+		prog->bindTexture(&tex);
+		prog->setModelviewMatrix(spect.getOri()*vconfig::ISOMETRY);
+		
 		if(1.0/spect.getOri().det() < _sqr(vconfig::MINIATURE_THRESHOLD*config::TILE_SIZE))
 		{
 			vec2 safe_zone = proj*(spect.getOri()*(Region::SIZE*config::TILE_SIZE*vec2(2.0,2.0)));
@@ -104,7 +114,7 @@ public:
 			for(auto i = begin(); i != end(); ++i)
 			{
 				vec2 view_pos = spect.getPos() + MapView::Locator::getTileCenterPos(MapView::Locator::getRegionCenterTile(~i),config::TILE_SIZE);
-				vec2 screen_pos = proj*(spect.getOri()*view_pos);
+				vec2 screen_pos = proj*(spect.getOri()*vconfig::ISOMETRY*view_pos);
 				if(_abs(screen_pos.x()) < 1.0 + _abs(safe_zone.x()) && _abs(screen_pos.y()) < 1.0 + _abs(safe_zone.y()))
 				{
 					prog->setTranslation(view_pos);

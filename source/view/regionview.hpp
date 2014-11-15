@@ -12,6 +12,7 @@
 #include<model/hex/hexarray.hpp>
 #include<model/hex/hexlocator.hpp>
 #include<model/region.hpp>
+#include<model/generator/config.hpp>
 
 static const fvec2 __vertex_texcoords[7] = {
 	fvec2(1.0,0.5/Tile::TYPES_NUM),
@@ -26,13 +27,13 @@ static const fvec2 __vertex_texcoords[7] = {
 template <typename T>
 fvec3 __getVertexColorMultiplier(const T &t)
 {
-	float mul = static_cast<float>(t.height)/config::gen::LAND_MAX_HEIGHT;
+    float mul = static_cast<float>(t.height)/gconfig::LAND_MAX_HEIGHT;
 	switch(t.type)
 	{
 	case Tile::GRASS:
 		return fvec3(1.0f,1.2f - 0.6f*mul,1.0f);
 	case Tile::SNOW:
-		return fvec3(1.0f,1.0f,1.0f)*(1.0f - mul + static_cast<float>(config::gen::SNOW_THRESHOLD)/config::gen::LAND_MAX_HEIGHT);
+        return fvec3(1.0f,1.0f,1.0f)*(1.0f - mul + static_cast<float>(gconfig::SNOW_THRESHOLD)/gconfig::LAND_MAX_HEIGHT);
 	case Tile::OCEAN:
 		return fvec3(1.0f,1.0f,1.0f)*(1.0f + mul);
 	// case Tile::FRESH:

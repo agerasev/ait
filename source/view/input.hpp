@@ -5,6 +5,7 @@
 
 #include<4u/window/window.hpp>
 
+#include"config.hpp"
 #include"spectator.hpp"
 #include"render.hpp"
 
@@ -40,11 +41,17 @@ public:
 		case SDL_MOUSEWHEEL:
 			if(event.wheel.y > 0)
 			{
-				spect.multOri(1.25*unimat2);
+				if(1.0/spect.getOri().det() >= sqr(vconfig::MIN_ZOOM))
+				{
+					spect.multOri(1.25*unimat2);
+				}
 			}
 			else if(event.wheel.y < 0)
 			{
-				spect.multOri(0.8*unimat2);
+				if(1.0/spect.getOri().det() <= sqr(vconfig::MAX_ZOOM))
+				{
+					spect.multOri(0.8*unimat2);
+				}
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
@@ -88,7 +95,7 @@ public:
 		int dx = mx - pmx, dy = my - pmy;
 		if(rmb)
 		{
-			spect.addPos(spect.getOri().invert()*((2.0/h)*vec2(dx,-dy)));
+			spect.addPos((spect.getOri()*vconfig::ISOMETRY).invert()*((2.0/h)*vec2(dx,-dy)));
 		}
 		pmx = mx;
 		pmy = my;

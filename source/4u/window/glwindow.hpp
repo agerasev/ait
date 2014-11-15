@@ -34,7 +34,7 @@ public:
 		{
 			/* TODO:
 			 * in this case use old OpenGL */
-			//throw(GLException("No support for OpenGL 2.0 found"));
+			throw(GLException("No support for OpenGL 2.0 found"));
 		}
 
 		glClearColor(0, 0, 0, 0);

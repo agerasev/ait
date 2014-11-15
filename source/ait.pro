@@ -6,17 +6,15 @@ QMAKE_CXXFLAGS += -std=c++11
 
 unix {
     LIBS += -lSDL2main -lSDL2 -lGLEW -lGL
-	DEPENDPATH += ./*
 }
 
 win32 {
-    INCLUDEPATH += C:\GLEW-MinGW\include C:\SDL2-2.0.3\i686-w64-mingw32\include
-    LIBS += -lmingw32 -LC:\SDL2-2.0.3\i686-w64-mingw32\lib -lsdl2main -lsdl2 -LC:\GLEW-MinGW\lib -lglew32 -lopengl32
-    DEPENDPATH += ./*
+    INCLUDEPATH += H:\devel\local\include
+    LIBS += -lmingw32 -LH:\devel\local\lib -lsdl2main -lsdl2 -lglew32 -lopengl32
 }
 
 SOURCES += \
-    main.cpp
+	main.cpp
 
 HEADERS += \
 	4u/complex/complex.hpp \
@@ -57,22 +55,24 @@ HEADERS += \
 	4u/window/window.hpp \
 	model/hex/hexarray.hpp \
 	model/hex/hexlocator.hpp \
-    model/tile.hpp \
-    view/render.hpp \
-    view/renderprogram.hpp \
-    view/spectator.hpp \
-    model/map.hpp \
-    model/region.hpp \
+	model/tile.hpp \
+	view/render.hpp \
+	view/renderprogram.hpp \
+	view/spectator.hpp \
+	model/map.hpp \
+	model/region.hpp \
 	view/mapview.hpp \
-    view/regionview.hpp \
-    view/input.hpp \
-    model/generator/generator.hpp \
-    model/generator/landscape.hpp \
-    model/config.hpp \
-    view/config.hpp
+	view/regionview.hpp \
+	view/input.hpp \
+	model/generator/generator.hpp \
+	model/generator/landscape.hpp \
+	model/config.hpp \
+	view/config.hpp \
+	view/textures.hpp \
+	model/generator/config.hpp \
+	view/entity/entityview.hpp
 
 OTHER_FILES += \
     ../shader/fragment.frag \
     ../shader/vertex.vert \
-    TODO.md \
-    ../shader/fragment_hex.frag
+    TODO.md
